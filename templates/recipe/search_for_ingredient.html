@@ -2,7 +2,7 @@
 {% block content %}
 <h1>レシピ検索</h1>
 <p>使用する食材を選択してください</p>
-<form  method="get">
+<form  action="{% url 'recipe:ingredient_result' %}" method="get">
 	<ul class="nav nav-tabs" role="tablist">
 		{% for category in search_categories %}
 			<li class="nav-item">
@@ -28,7 +28,7 @@
 						<li>
 							<div class="image_box">
 								<img class="thumbnail" src="/media/images/foo1.png" alt="{{ingredient.name}}" id="10-276">
-								<input class="disabled_checkbox" type="checkbox" checked name="categories[]" id="10-276" value="10-276">
+								<input class="disabled_checkbox" type="checkbox"  name="ingredients" id="10-276" value="{{ingredient.id}}">
 							</div>
 						</li>
 					{% endfor %}

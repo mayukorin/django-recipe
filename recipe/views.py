@@ -22,3 +22,13 @@ class SearchRecipeForIngredientView(View):
         search_categories = Category.objects.all().prefetch_related('ingredients')
         context = { 'search_categories': search_categories }
         return render(request, 'recipe/search_for_ingredient.html', context)
+
+
+class ResultRecipeForIngredientView(View):
+
+    def get(self, request, *args, **kwargs):
+        ingredients = self.request.GET.getlist('ingredients')
+        print(ingredients)
+        search_categories = Category.objects.all().prefetch_related('ingredients')
+        context = { 'search_categories': search_categories }
+        return render(request, 'recipe/search_for_ingredient.html', context)

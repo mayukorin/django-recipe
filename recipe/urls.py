@@ -4,5 +4,6 @@ from . import views
 app_name = 'recipe'
 urlpatterns = [
     path('random', views.RandomRecipeView.as_view(), name='random'), 
-    path('search_for_ingredient', views.SearchRecipeForIngredientView.as_view())
+    path('search_for_ingredient', views.SearchRecipeForIngredientView.as_view()),
+    path('result_for_ingredient', views.ResultRecipeForIngredientView.as_view(), name='ingredient_result')
 ]
