@@ -13,3 +13,10 @@ class RandomRecipeView(View):
         }
         
         return render(request, 'recipe/random.html', context)
+
+
+class SearchRecipeForIngredientView(View):
+
+    def get(self, request, *args, **kwargs):
+        print("okkk")
+        return render(request, 'recipe/search_for_ingredient.html')

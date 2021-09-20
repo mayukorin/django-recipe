@@ -4,14 +4,23 @@ from django.contrib.auth.models import AbstractUser, UserManager
 from django.utils.translation import gettext_lazy as _
 
 
+class Category(models.Model):
+    name = models.CharField(max_length=100, default="category")
+
+class Ingredient(models.Model):
+    name = models.CharField(max_length=100, default="inredient")
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, null=True)
+
 class Recipe(models.Model):
     title = models.CharField(max_length=100)
     link = models.CharField(max_length=300)
     img = models.CharField(max_length=300)
+    ingredients = models.ManyToManyField(Ingredient)
    
     # クラスオブジェクトを文字列で返すメソッド
     def __str__(self):
         return self.title
+
 
 class SiteUserManager(UserManager):
     def _create_user(self, email, password, **extra_fields):
