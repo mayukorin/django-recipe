@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h1>検索結果</h1>
+<div id="recipe_result">
+	
+	{% for recipe in result_recipes %}
+		<button class="recipe-btn" onclick="location.href='{{ recipe.link }}'">
+			<article class="article">
+				<figure>
+					<img src="{{ recipe.img }}">
+				</figure>
+				<div class="recipe-info">
+					<h2>{{ recipe.title }}</h2>
+				</div>
+			</article>
+		</button>
+	{% endfor %}
+</div>
+
+{% endblock %}

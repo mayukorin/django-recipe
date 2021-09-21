@@ -18,7 +18,7 @@ class RandomRecipeView(View):
 class SearchRecipeForIngredientView(View):
 
     def get(self, request, *args, **kwargs):
-        print("okkk")
+        
         search_categories = Category.objects.all().prefetch_related('ingredients')
         context = { 'search_categories': search_categories }
         return render(request, 'recipe/search_for_ingredient.html', context)
@@ -27,8 +27,11 @@ class SearchRecipeForIngredientView(View):
 class ResultRecipeForIngredientView(View):
 
     def get(self, request, *args, **kwargs):
-        ingredients = self.request.GET.getlist('ingredients')
-        print(ingredients)
-        search_categories = Category.objects.all().prefetch_related('ingredients')
-        context = { 'search_categories': search_categories }
-        return render(request, 'recipe/search_for_ingredient.html', context)
+        
+        ingredient_id_list = self.request.GET.getlist('ingredients')
+        result_recipes = Recipe.objects.filter()
+        for ingredient_id in ingredient_id_list:
+            result_recipes =result_recipes.filter(ingredients=ingredient_id)
+        context = { 'result_recipes' : result_recipes }
+        
+        return render(request, 'recipe/search_result.html', context)

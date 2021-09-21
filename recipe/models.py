@@ -11,6 +11,9 @@ class Ingredient(models.Model):
     name = models.CharField(max_length=100, default="inredient")
     category = models.ForeignKey(Category, on_delete=models.CASCADE, null=True, related_name="ingredients")
 
+    def __str__(self):
+        return self.name
+
 class Recipe(models.Model):
     title = models.CharField(max_length=100)
     link = models.CharField(max_length=300)
