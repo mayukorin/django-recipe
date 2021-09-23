@@ -3,5 +3,3 @@
 __pycache__/
 db-volumes/
 db.sqlite3
-docker-compose.yml
-Dockerfile
