@@ -3,6 +3,7 @@ from django.views.generic import View
 from .models import Recipe, Category, Ingredient
 # Create your views here.
 
+
 class RandomRecipeView(View):
 
     def get(self, request, *args, **kwargs):
