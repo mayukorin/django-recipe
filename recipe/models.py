@@ -10,14 +10,19 @@ class Category(models.Model):
 class Ingredient(models.Model):
     name = models.CharField(max_length=100, default="inredient")
     category = models.ForeignKey(Category, on_delete=models.CASCADE, null=True, related_name="ingredients")
+    api_id = models.CharField(max_length=100, default="0")
 
     def __str__(self):
         return self.name
 
 class Recipe(models.Model):
     title = models.CharField(max_length=100)
-    link = models.CharField(max_length=300)
-    img = models.CharField(max_length=300)
+    link = models.CharField(max_length=300, unique=True)
+    img = models.CharField(max_length=300, unique=True)
+    publish_day = models.CharField(max_length=100, default="")
+    recipe_time = models.CharField(max_length=100, default="")
+    description = models.CharField(max_length=100, default="")
+
     ingredients = models.ManyToManyField(Ingredient)
    
     # クラスオブジェクトを文字列で返すメソッド
