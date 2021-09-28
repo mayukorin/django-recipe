@@ -1,6 +1,7 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views.generic import View
 from .models import Recipe, Category, Ingredient
+from .forms import SiteUserRegisterForm
 # Create your views here.
 
 
@@ -36,3 +37,27 @@ class ResultRecipeForIngredientView(View):
         context = { 'result_recipes' : result_recipes }
         
         return render(request, 'recipe/search_result.html', context)
+
+
+
+# 会員登録
+class SiteUserRegisterView(View):
+    def get(self, request, *args, **kwargs):
+        context = {
+            "form": SiteUserRegisterForm(),
+        }
+        return render(request, "recipe/siteUser/register.html", context)
+
+
+    def post(self, request, *args, **kwargs):
+        form = SiteUserRegisterForm(request.POST)
+        if not form.is_valid():
+            return render(request, "recipe/siteUser/register.html", {"form": form})
+
+        new_site_user = form.save(commit=False)
+        new_site_user.set_password(form.cleaned_data["password"])
+
+        new_site_user.save()
+        # messages.success(request, "会員登録が完了しました")
+        # return redirect("app:site_user_login")
+    

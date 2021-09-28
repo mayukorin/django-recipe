@@ -58,8 +58,8 @@ class SiteUserManager(UserManager):
 class SiteUser(AbstractUser):
 
 
-    username = models.CharField(_("username"), max_length=150, blank=True)
-    email = models.EmailField(_("email address"), unique=True)
+    username = models.CharField(verbose_name='ユーザ名', max_length=150, blank=True)
+    email = models.EmailField(verbose_name='メールアドレス', unique=True)
 
     objects = SiteUserManager()
 
