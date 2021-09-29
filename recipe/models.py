@@ -58,13 +58,18 @@ class SiteUserManager(UserManager):
 class SiteUser(AbstractUser):
 
 
-    username = models.CharField(verbose_name='ユーザ名', max_length=150, blank=True)
-    email = models.EmailField(verbose_name='メールアドレス', unique=True)
+    username = models.CharField(verbose_name='ユーザ名', 
+        max_length=150)
+
+    email = models.EmailField(verbose_name='メールアドレス', 
+                            unique=True)
 
     objects = SiteUserManager()
 
     USERNAME_FIELD = "email"
 
-    REQUIRED_FIELDS = []
+    REQUIRED_FIELDS = ["username",]
 
-    favorite_recipes = models.ManyToManyField(Recipe, blank=True)
+    favorite_recipes = models.ManyToManyField(Recipe)
+
+   
