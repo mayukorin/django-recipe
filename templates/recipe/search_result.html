@@ -2,24 +2,45 @@
 {% block content %}
 
 <h1>検索結果</h1>
-<div id="recipe_result">
-	
-	{% for recipe in result_recipes %}
-		<button class="recipe-btn" onclick="location.href='{{ recipe.link }}'">
-			<article class="article">
-				<figure>
-					<img src="{{ recipe.img }}">
-				</figure>
-				<div class="recipe-info">
-					<h2>{{ recipe.title }}</h2>
-					<time class="article-date">{{ recipe.publish_day }}</time>
-					<br></br>
-					<p>調理時間目安:{{ recipe.recipe_time }}</p>
-					<p>{{ recipe.description }}</p>
-				</div>
-			</article>
-		</button>
+<div id="recipe_result" class="container">
+	{% for recipe in result_recipes %}	
+		<div class="row m-5">
+			<div class="col-5 m-2">
+				<img src="{{ recipe.img }}" class="abc">
+			</div>
+			<div class="col-6 m-2">
+				<h2>{{ recipe.title }}</h2>
+				<time class="article-date">{{ recipe.publish_day }}</time>
+				<br></br>
+				<p>調理時間目安:{{ recipe.recipe_time }}</p>
+				<p>{{ recipe.description }}</p>
+				<a href="{{ recipe.link }}">レシピ詳細を見る</a>
+				<button type="button" class="btn btn-success m-2">お気に入り登録</button>
+			</div>
+		</div>
 	{% endfor %}
 </div>
-
+<div id="select-myrecipe">
+	<form method="post">
+		{% csrf_token %}
+		<p class="btn btn-link" id="select" onclick="clickBtn2()">戻す</p>
+		{% for recipe in result_recipes %}
+				<article class="article">
+					<input class="recipe-btn" type="checkbox" name="recipes" id="{{ recipe.pk }}"value="{{recipe.pk}}">
+					<label class="label" for="{{ recipe.pk }}">
+						<figure>
+							<img src="{{ recipe.img }}">
+						</figure>
+						<div class="recipe-info">
+							<h2>{{ recipe.title }}</h2>
+							<time class="article-date">{{ recipe.publish_day }}</time>
+							<br></br>
+							<p>調理時間目安:{{ recipe.recipe_time }}</p>
+							<p>{{ recipe.description }}</p>
+						</div>
+					</label>
+				</article>
+		{% endfor %}
+	</form>
+</div>
 {% endblock %}

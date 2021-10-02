@@ -283,3 +283,8 @@ ul.image_list li .image_box {
     border-radius: 5px;
     text-decoration: none;
 }
+
+.abc {
+    width: 100%;
+    height: auto;
+}
