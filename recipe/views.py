@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.views.generic import View
-from .models import Recipe, Category, Ingredient
+from .models import Recipe, Category, Ingredient, SiteUser
 from .forms import SiteUserRegisterForm, SiteUserLoginForm
 from django.contrib.auth import login as auth_login
 # Create your views here.
@@ -35,10 +35,61 @@ class ResultRecipeForIngredientView(View):
         result_recipes = Recipe.objects.filter()
         for ingredient_id in ingredient_id_list:
             result_recipes =result_recipes.filter(ingredients=ingredient_id)
+        
+        result_recipes = result_recipes.values()
+        for recipe in result_recipes:
+            recipe['favorite_flag'] = request.user.favorite_recipes.filter(pk=recipe['id']).exists()
+           
+        print(result_recipes)
         context = { 'result_recipes' : result_recipes }
         
         return render(request, 'recipe/search_result.html', context)
 
+# レシピのお気に入り登録
+
+class FavoriteRecipeRegisterView(View):
+
+    def get(self, request, *args, **kwargs):
+
+        favorite_recipe = Recipe.objects.get(id=self.request.GET['recipe_id'])
+        request.user.favorite_recipes.add(favorite_recipe)
+
+        return redirect("recipe:ingredient_result")
+
+
+
+def MakeFavorite(request):
+
+    import json
+    from django.http import HttpResponse
+    from .models import Recipe, SiteUser
+
+    favorite_recipe = Recipe.objects.get(id=request.POST['recipe_id'])
+    request.user.favorite_recipes.add(favorite_recipe)
+
+    response_data = {}
+    response_data["recipe_id"] = request.POST['recipe_id']
+    
+    json = json.dumps(response_data)
+    print(json)
+    return HttpResponse(json, content_type='application/json')
+
+
+def DestroyFavorite(request):
+
+    import json
+    from django.http import HttpResponse
+    from .models import Recipe, SiteUser
+
+    favorite_recipe = Recipe.objects.get(id=request.POST['recipe_id'])
+    request.user.favorite_recipes.remove(favorite_recipe)
+
+    response_data = {}
+    response_data["recipe_id"] = request.POST['recipe_id']
+    
+    json = json.dumps(response_data)
+    print(json)
+    return HttpResponse(json, content_type='application/json')
 
 
 # 会員登録

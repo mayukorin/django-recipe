@@ -72,4 +72,9 @@ class SiteUser(AbstractUser):
 
     favorite_recipes = models.ManyToManyField(Recipe)
 
+
+    def is_favorite_recipe(self, recipe_pk):
+
+        return self.favorite_recipes.filter(pk=recipe_pk).exists()
+
    

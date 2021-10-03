@@ -15,32 +15,19 @@
 				<p>調理時間目安:{{ recipe.recipe_time }}</p>
 				<p>{{ recipe.description }}</p>
 				<a href="{{ recipe.link }}">レシピ詳細を見る</a>
-				<button type="button" class="btn btn-success m-2">お気に入り登録</button>
+				<span id="recipe-{{recipe.id}}">
+					{% if recipe.favorite_flag %}
+						<button type="button"  class="btn btn-danger m-2 favorite-destroy-button" value="{{recipe.id}}">
+							お気に入り解除
+						</button>
+					{% else %}
+						<button type="button"  class="btn btn-success m-2 favorite-make-button" value="{{recipe.id}}">
+							お気に入り登録
+						</button>
+					{% endif %}
+				</span>
 			</div>
 		</div>
 	{% endfor %}
-</div>
-<div id="select-myrecipe">
-	<form method="post">
-		{% csrf_token %}
-		<p class="btn btn-link" id="select" onclick="clickBtn2()">戻す</p>
-		{% for recipe in result_recipes %}
-				<article class="article">
-					<input class="recipe-btn" type="checkbox" name="recipes" id="{{ recipe.pk }}"value="{{recipe.pk}}">
-					<label class="label" for="{{ recipe.pk }}">
-						<figure>
-							<img src="{{ recipe.img }}">
-						</figure>
-						<div class="recipe-info">
-							<h2>{{ recipe.title }}</h2>
-							<time class="article-date">{{ recipe.publish_day }}</time>
-							<br></br>
-							<p>調理時間目安:{{ recipe.recipe_time }}</p>
-							<p>{{ recipe.description }}</p>
-						</div>
-					</label>
-				</article>
-		{% endfor %}
-	</form>
 </div>
 {% endblock %}
