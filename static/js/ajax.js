@@ -93,6 +93,37 @@ $(document).ready(function() {
         });
     
     });
+
+
+    $(document).on('click', '.favorite-destroy-button2', function(event) {
+        let recipe_id = $(this).val();
+        console.log(recipe_id);
+        event.preventDefault();
+        $.ajax({
+            url: "/recipe/destroy_favorite/",
+            type: "POST",
+            dataType: "json",
+            contentType: "application/x-www-form-urlencoded",
+            data: {
+                'recipe_id': recipe_id,
+            },
+            beforeSend: function(xhr, settings){
+                if(!csrfSafeMethod(settings.type)&&!this.crossDomain){
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                }
+            },
+            success:function(data){
+                console.log(data);
+                console.log("2");
+                recipe_id = data["recipe_id"]
+                $(`#recipe-${recipe_id}-contain`).html("");
+            },
+            error:function(req,text){
+                console.log(text);
+            },
+        });
+    
+    });
    
 
 });

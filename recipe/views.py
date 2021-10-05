@@ -10,9 +10,9 @@ class RandomRecipeView(View):
 
     def get(self, request, *args, **kwargs):
 
-        random_recipe_list = Recipe.objects.all
+        random_recipes = Recipe.objects.order_by('?')[:5]
         context = {
-            'random_recipe_list' : random_recipe_list
+            'random_recipes' : random_recipes
         }
         
         return render(request, 'recipe/random.html', context)
@@ -55,6 +55,18 @@ class FavoriteRecipeRegisterView(View):
         request.user.favorite_recipes.add(favorite_recipe)
 
         return redirect("recipe:ingredient_result")
+
+
+class MyRecipeIndexView(View):
+
+    def get(self, request, *args, **kwargs):
+
+        favorite_recipes = request.user.favorite_recipes.all().values()
+        for recipe in favorite_recipes:
+            recipe['favorite_flag'] = True
+        context = { 'my_recipes': favorite_recipes }
+
+        return render(request, 'recipe/my_recipe.html', context)
 
 
 

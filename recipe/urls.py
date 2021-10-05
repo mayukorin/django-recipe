@@ -1,5 +1,5 @@
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path
 from . import views
 app_name = 'recipe'
 urlpatterns = [
@@ -9,5 +9,6 @@ urlpatterns = [
     path('siteUser/register', views.SiteUserRegisterView.as_view(), name='site_user_register'),
     path('siteUser/login', views.SiteUserLoginView.as_view(), name='site_user_login'),
     path('make_favorite/', views.MakeFavorite, name='make_favorite'),
-    path('destroy_favorite/', views.DestroyFavorite, name='destroy_favorite')
+    path('destroy_favorite/', views.DestroyFavorite, name='destroy_favorite'),
+    path('my_recipe', views.MyRecipeIndexView.as_view(), name='my_recipe'),
 ]
