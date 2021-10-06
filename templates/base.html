@@ -22,8 +22,8 @@
                 <ul class="navbar-nav mr-auto">
                 {% if user.is_authenticated %}
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'recipe:my_recipe' %}"
-                        >マイレシピ</a
+                        <a class="nav-link" href="{% url 'recipe:favorite_recipe' %}"
+                        >お気に入りレシピ</a
                         >
                     </li>
                 {% endif %}

@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
 <div id="recipe_result" class="container">
-	{% for recipe in my_recipes %}	
+	{% for recipe in favorite_recipes %}	
 		<div class="row m-5" id="recipe-{{recipe.id}}-contain">
 			<div class="col-5 m-2">
 				<img src="{{ recipe.img }}" class="abc">
