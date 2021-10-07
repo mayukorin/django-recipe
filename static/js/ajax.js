@@ -56,8 +56,9 @@ $(document).ready(function() {
 
     $(document).on('click', '.favorite-destroy-button', function(event) {
         let recipe_id = $(this).val();
-        console.log(recipe_id);
+        console.log($(this).attr('class'));
         event.preventDefault();
+        let template_name = $(this).data('template');
         $.ajax({
             url: "/recipe/destroy_favorite/",
             method: "POST",
@@ -68,31 +69,17 @@ $(document).ready(function() {
         }).done(function(data) {
             
             recipe_id = data["recipe_id"]
-            $(`#recipe-${recipe_id}-favorite-button`).html(
-                `<button type="button"  class="btn btn-success m-2 favorite-make-button" value=${recipe_id}>
-                    お気に入り登録
-                </button>`
-            );
+            if (template_name == "favorite_recipe") {
+                $(`#recipe-${recipe_id}-article`).html("");
+            } else {
+                $(`#recipe-${recipe_id}-favorite-button`).html(
+                    `<button type="button"  class="btn btn-success m-2 favorite-make-button" value=${recipe_id}>
+                        お気に入り登録
+                    </button>`
+                );
+            }
         })
     
-    })
-
-    $(document).on('click', '.favorite-destroy-button2', function(event) {
-        let recipe_id = $(this).val();
-        console.log(recipe_id);
-        event.preventDefault();
-        $.ajax({
-            url: "/recipe/destroy_favorite/",
-            method: "POST",
-            dataType: "json",
-            data: {
-                'recipe_id': recipe_id,
-            },
-        }).done(function(data) {
-            recipe_id = data["recipe_id"]
-            $(`#recipe-${recipe_id}-article`).html("");
-
-        })
     })
 
 })
