@@ -4,9 +4,9 @@
 <h1>検索結果</h1>
 <div id="recipe_result" class="container">
 	{% for recipe in result_recipes %}	
-		<div class="row m-5">
+		<div class="row m-5" id="recipe-{{recipe.id}}-article">
 			<div class="col-5 m-2">
-				<img src="{{ recipe.img }}" class="abc">
+				<img src="{{ recipe.img }}" class="recipe-img">
 			</div>
 			<div class="col-6 m-2">
 				<h2>{{ recipe.title }}</h2>
@@ -15,7 +15,7 @@
 				<p>調理時間目安:{{ recipe.recipe_time }}</p>
 				<p>{{ recipe.description }}</p>
 				<a href="{{ recipe.link }}">レシピ詳細を見る</a>
-				<span id="recipe-{{recipe.id}}">
+				<span id="recipe-{{recipe.id}}-favorite-button">
 					{% if recipe.favorite_flag %}
 						<button type="button"  class="btn btn-danger m-2 favorite-destroy-button" value="{{recipe.id}}">
 							お気に入り解除

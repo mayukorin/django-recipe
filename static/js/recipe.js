@@ -38,10 +38,7 @@ $(document).ready(function() {
   d2 = document.getElementById("select-myrecipe");
   d3 = document.getElementById("myrecipe_result");
   d4 = document.getElementById("select-myrecipe-delete");
-  
-  // デフォルト非表示
-  d2.style.display = "none";
-  d4.style.display = "none";
+
   
   function clickBtn1() {
       // 選択に変える
