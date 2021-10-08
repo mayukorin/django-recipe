@@ -1,17 +1,34 @@
-from django.conf import settings
 from django.db import models
 from django.contrib.auth.models import AbstractUser, UserManager
-from django.utils.translation import gettext_lazy as _
+
+
+class Category(models.Model):
+    name = models.CharField(max_length=100, default="")
+
+
+class Ingredient(models.Model):
+    name = models.CharField(max_length=100, default="")
+    category = models.ForeignKey(
+        Category, on_delete=models.CASCADE, null=True, related_name="ingredients"
+    )
+    api_id = models.CharField(max_length=100, default="")
+
+    def __str__(self):
+        return self.name
 
 
 class Recipe(models.Model):
     title = models.CharField(max_length=100)
-    link = models.CharField(max_length=300)
-    img = models.CharField(max_length=300)
-   
-    # クラスオブジェクトを文字列で返すメソッド
+    link = models.CharField(max_length=300, unique=True)
+    img = models.CharField(max_length=300, unique=True)
+    publish_day = models.CharField(max_length=100, default="")
+    recipe_time = models.CharField(max_length=100, default="")
+    description = models.CharField(max_length=100, default="")
+    ingredients = models.ManyToManyField(Ingredient)
+
     def __str__(self):
         return self.title
+
 
 class SiteUserManager(UserManager):
     def _create_user(self, email, password, **extra_fields):
@@ -40,14 +57,20 @@ class SiteUserManager(UserManager):
 
 class SiteUser(AbstractUser):
 
+    username = models.CharField(verbose_name="ユーザ名", max_length=150)
 
-    username = models.CharField(_("username"), max_length=150, blank=True)
-    email = models.EmailField(_("email address"), unique=True)
+    email = models.EmailField(verbose_name="メールアドレス", unique=True)
 
     objects = SiteUserManager()
 
     USERNAME_FIELD = "email"
 
-    REQUIRED_FIELDS = []
+    REQUIRED_FIELDS = [
+        "username",
+    ]
 
-    favorite_recipes = models.ManyToManyField(Recipe, blank=True)
+    favorite_recipes = models.ManyToManyField(Recipe)
+
+    def is_favorite_recipe(self, recipe_pk):
+
+        return self.favorite_recipes.filter(pk=recipe_pk).exists()

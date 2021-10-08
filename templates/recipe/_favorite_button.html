@@ -1,0 +1,11 @@
+ <span id="recipe-{{recipe_id}}-favorite-button">
+    {% if favorite_flag %}
+        <button type="button"  class="btn btn-danger m-2 favorite-destroy-button" value="{{recipe_id}}" data-template="{{template_name}}">
+            お気に入り解除
+        </button>
+    {% else %}
+        <button type="button"  class="btn btn-success m-2 favorite-make-button" value="{{recipe_id}}" data-template="{{template_name}}">
+            お気に入り登録
+        </button>
+    {% endif %}
+</span>

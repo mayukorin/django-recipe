@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>レシピ検索</h1>
+<p>使用する食材を選択してください</p>
+<form  action="{% url 'recipe:ingredient_result' %}" method="get">
+	<ul class="nav nav-tabs" role="tablist">
+		{% for category in search_categories %}
+			<li class="nav-item">
+				<a class="nav-link {% if category.id == 1 %} active {% endif %}" id="category{{category.id}}-tab" data-toggle="tab" href="#category{{category.id}}" role="tab" aria-controls="category{{category.id}}" aria-selected="true">
+					{{ category.name }}
+				</a>
+			</li>
+		{% endfor %}
+	</ul>
+	<div class="tab-content">
+		{% for category in search_categories %}
+			<div class="tab-pane fade {% if category.id == 1 %} show active  {% endif %}" id="category{{category.id}}" role="tabpanel" aria-labelledby="category{{category.id}}-tab">
+				<ul class="image_list">
+					{% for ingredient in category.ingredients.all %}
+						<li>
+							<div class="image_box">
+								<img class="thumbnail" src="/media/images/foo1.png" alt="{{ingredient.name}}" id="10-276">
+								<input class="disabled_checkbox" type="checkbox"  name="ingredients" id="10-276" value="{{ingredient.id}}">
+							</div>
+						</li>
+					{% endfor %}
+				</ul>
+			</div>
+		{% endfor %}
+	</div>
+	<div class="btn-send-form" role="group" aria-label="Basic example">
+  		<button type="submit" class="btn btn-danger">検索</button>
+  		<button type="button" class="btn btn-outline-info" id="clear">クリア</button>
+	</div>
+</form>
+{% endblock %}
