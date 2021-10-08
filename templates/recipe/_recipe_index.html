@@ -10,7 +10,9 @@
             <p>調理時間目安:{{ recipe.recipe_time }}</p>
             <p>{{ recipe.description }}</p>
             <a href="{{ recipe.link }}">レシピ詳細を見る</a>
-            {% include "recipe/_favorite_button.html" with recipe_id=recipe.id favorite_flag=recipe.favorite_flag template_name=template_name %}
+            {% if user.is_authenticated %}
+                {% include "recipe/_favorite_button.html" with recipe_id=recipe.id favorite_flag=recipe.favorite_flag template_name=template_name %}
+            {% endif %}
         </div>
     </div>
 {% endfor %}
