@@ -29,6 +29,9 @@ class Recipe(models.Model):
     def __str__(self):
         return self.title
 
+class TodayIngredientOrder(models.Model):
+    order = models.IntegerField(default=0)
+
 
 class SiteUserManager(UserManager):
     def _create_user(self, email, password, **extra_fields):
@@ -74,3 +77,6 @@ class SiteUser(AbstractUser):
     def is_favorite_recipe(self, recipe_pk):
 
         return self.favorite_recipes.filter(pk=recipe_pk).exists()
+
+
+

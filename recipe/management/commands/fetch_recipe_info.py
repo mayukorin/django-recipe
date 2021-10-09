@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand
 import requests
-from recipe.models import Ingredient, Recipe
+from recipe.models import Ingredient, Recipe, TodayIngredientOrder
 
 
 REQUEST_URL = "https://app.rakuten.co.jp/services/api/Recipe/CategoryRanking/20170426"
@@ -8,15 +8,20 @@ APP_ID = "1054952264484319668"
 
 class Command(BaseCommand):
     def handle(self, *args, **options):
-        target_api_id = "10-276"
-        target_ingredient = Ingredient.objects.get(api_id=target_api_id)
+        today_order_model = TodayIngredientOrder.objects.all()[0]
+        today_order = today_order_model.order
+
+        ingredients = Ingredient.objects.all().order_by('pk')
+        target_ingredient = ingredients[today_order]
+        target_api_id = target_ingredient.api_id
+
         search_param = {
             "applicationId":[APP_ID],
             #"formatVersion":2,
             "categoryId": target_api_id
         }
         responses = requests.get(REQUEST_URL, search_param).json()
-        print(responses["result"])
+        # print(responses["result"])
 
         for recipe_result in responses["result"]:
             img = recipe_result["foodImageUrl"]
@@ -45,3 +50,11 @@ class Command(BaseCommand):
 
                 
             recipe.save()
+
+
+        today_order += 1
+        if ingredients.count() <= today_order:
+            today_order = 0
+        today_order_model.order = today_order
+        today_order_model.save()
+        
