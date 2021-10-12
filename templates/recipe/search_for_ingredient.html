@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
+{% load static %}
+{% load recipe_custom_tags %}
 <h1>レシピ検索</h1>
 <p>使用する食材を選択してください</p>
 <form  action="{% url 'recipe:ingredient_result' %}" method="get">
@@ -18,9 +20,14 @@
 				<ul class="image_list">
 					{% for ingredient in category.ingredients.all %}
 						<li>
-							<div class="image_box">
-								<img class="thumbnail" src="/media/images/foo1.png" alt="{{ingredient.name}}" id="10-276">
+							<div class="image_box m-2">
+								{% with imag_url=ingredient.name|ingredient_img_path %}
+								<img class="thumbnail" src="{% static imag_url %}" alt="{{ingredient.name}}" id="10-276">
+								<div class="row">
+									<div class="col-12">{{ ingredient.name }} </div>
+								</div>
 								<input class="disabled_checkbox" type="checkbox"  name="ingredients" id="10-276" value="{{ingredient.id}}">
+								{% endwith %}
 							</div>
 						</li>
 					{% endfor %}
