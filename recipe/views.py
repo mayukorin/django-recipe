@@ -5,6 +5,7 @@ from .forms import SiteUserRegisterForm, SiteUserLoginForm
 from django.contrib.auth import login as auth_login
 import json
 from django.http import HttpResponse
+from django.contrib import messages
 
 # Create your views here.
 
@@ -99,8 +100,8 @@ class SiteUserRegisterView(View):
         new_site_user.set_password(form.cleaned_data["password"])
 
         new_site_user.save()
-        # messages.success(request, "会員登録が完了しました")
-        # return redirect("app:site_user_login")
+        messages.success(request, "会員登録が完了しました")
+        return redirect("app:site_user_login")
 
 
 # ログイン
