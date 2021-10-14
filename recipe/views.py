@@ -2,10 +2,11 @@ from django.shortcuts import render, redirect
 from django.views.generic import View
 from .models import Recipe, Category
 from .forms import SiteUserRegisterForm, SiteUserLoginForm
-from django.contrib.auth import login as auth_login
+from django.contrib.auth import login as auth_login, logout as auth_logout
 import json
 from django.http import HttpResponse
 from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 # Create your views here.
 
@@ -101,7 +102,7 @@ class SiteUserRegisterView(View):
 
         new_site_user.save()
         messages.success(request, "会員登録が完了しました")
-        return redirect("app:site_user_login")
+        return redirect("recipe:site_user_login")
 
 
 # ログイン
@@ -121,5 +122,17 @@ class SiteUserLoginView(View):
         login_site_user = form.get_site_user()
 
         auth_login(request, login_site_user)
-
+        messages.success(request, "ログインしました")
         return redirect("recipe:ingredient_search")
+
+
+# ログアウト
+class SiteUserLogoutView(LoginRequiredMixin, View):
+    def get(self, request, *args, **kwargs):
+
+        if request.user.is_authenticated:
+            auth_logout(request)
+
+        messages.success(request, "ログアウトしました")
+
+        return redirect("recipe:site_user_login")

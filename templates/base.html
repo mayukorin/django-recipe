@@ -20,9 +20,18 @@
 
         <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
             <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
-            <li class="nav-item active">
-                <a class="nav-link" href="{% url 'recipe:favorite_recipe' %}">お気に入りレシピ</a>
-            </li>
+            {% if user.is_authenticated %}
+                <li class="nav-item active">
+                    <a class="nav-link" href="{% url 'recipe:favorite_recipe' %}">お気に入りレシピ</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="{% url 'recipe:site_user_logout' %}">ログアウト</a>
+                </li>
+                {% else %}
+                <li class="nav-item active">
+                    <a class="nav-link" href="{% url 'recipe:site_user_login' %}">ログイン</a>
+                </li>
+                {% endif %}
             </ul>
         </div>
     </nav>
