@@ -1,12 +1,15 @@
 from django.shortcuts import render, redirect
 from django.views.generic import View
 from .models import Recipe, Category
-from .forms import SiteUserRegisterForm, SiteUserLoginForm
+from .forms import SiteUserRegisterForm, SiteUserLoginForm, LoginForm
 from django.contrib.auth import login as auth_login, logout as auth_logout
 import json
 from django.http import HttpResponse
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.views import LoginView as AuthLoginView
+from django.contrib.messages.views import SuccessMessageMixin
+
 
 # Create your views here.
 
@@ -45,7 +48,17 @@ class ResultRecipeForIngredientView(View):
         return render(request, "recipe/search_result.html", context)
 
 
-class FavoriteRecipeIndexView(View):
+class FavoriteRecipeIndexView(LoginRequiredMixin, View):
+
+    permission_denied_message = "ログインしてください"
+
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            messages.error(request, "ログインしてください", extra_tags='danger')
+            return self.handle_no_permission()
+        return super().dispatch(request, *args, **kwargs)
+
+
     def get(self, request, *args, **kwargs):
 
         favorite_recipes = request.user.favorite_recipes.all().values()
@@ -56,7 +69,7 @@ class FavoriteRecipeIndexView(View):
         return render(request, "recipe/favorite_recipe.html", context)
 
 
-class MakeFavoriteView(View):
+class MakeFavoriteView(LoginRequiredMixin, View):
     def post(self, request, *args, **kwargs):
 
         if request.is_ajax():
@@ -70,7 +83,7 @@ class MakeFavoriteView(View):
             return HttpResponse(json_response, content_type="application/json")
 
 
-class DestroyFavoriteView(View):
+class DestroyFavoriteView(LoginRequiredMixin, View):
     def post(self, request, *args, **kwargs):
 
         if request.is_ajax():
@@ -123,7 +136,14 @@ class SiteUserLoginView(View):
 
         auth_login(request, login_site_user)
         messages.success(request, "ログインしました")
+        print(request.POST.get('next'))
         return redirect("recipe:ingredient_search")
+
+class LoginView(SuccessMessageMixin, AuthLoginView):
+
+    template_name = 'recipe/siteUser/login.html'
+    authentication_form = LoginForm
+    success_message = 'ログインしました'
 
 
 # ログアウト

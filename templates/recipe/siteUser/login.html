@@ -16,7 +16,7 @@
                 <input name="{{item.name}}" class="form-control {% if item.errors %}is-invalid{% endif %}"
                     type="{{item.field.widget.input_type}}">
                 {% if item.errors %}
-                <div class="invalid-feedback">{{item.errors.0}}</div>
+                    <div class="invalid-feedback">{{item.errors.0}}</div>
                 {% endif %}
             </div>
         {% endfor %}

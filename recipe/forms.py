@@ -1,6 +1,7 @@
 from django import forms
 from .models import SiteUser
 from django.core.exceptions import ObjectDoesNotExist
+from django.contrib.auth.forms import AuthenticationForm, UsernameField
 
 class SiteUserRegisterForm(forms.ModelForm):
     class Meta:
@@ -85,3 +86,37 @@ class SiteUserLoginForm(forms.Form):
 
     def get_site_user(self):
         return self.site_user_cache
+
+
+class LoginForm(AuthenticationForm):
+
+    username = forms.EmailField(
+        widget=forms.TextInput(attrs={'autofocus': True}),
+        error_messages={
+            'required': 'メールアドレスを入力してください',
+            'invalid' : 'メールアドレスは正しい形式で入力してください'
+        }
+        
+    )
+
+    password = forms.CharField(
+        label= 'パスワード',
+        strip=False,
+        widget=forms.PasswordInput(attrs={'autocomplete': 'current-password'}),
+        error_messages={
+            'required' : 'パスワードを入力してください',
+        }
+    )
+
+    error_messages = {
+        'invalid_login' : 'メールアドレスかパスワードが間違っています',
+        'inactive' : 'アカウントが有効ではありません',
+        'username' : {
+            'required': 'メールアドレスを入力してください',
+            'invalid' : 'メールアドレスは正しい形式で入力してください'
+        },
+        'password' : {
+            'required' : 'パスワードを入力してください'
+        }
+    }
+
