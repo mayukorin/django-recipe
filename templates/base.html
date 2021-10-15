@@ -25,11 +25,14 @@
                     <a class="nav-link" href="{% url 'recipe:favorite_recipe' %}">お気に入りレシピ</a>
                 </li>
                 <li class="nav-item active">
-                    <a class="nav-link" href="{% url 'recipe:site_user_logout' %}">ログアウト</a>
+                    <a class="nav-link" href="{% url 'recipe:site_user_signout' %}">ログアウト</a>
                 </li>
                 {% else %}
                 <li class="nav-item active">
-                    <a class="nav-link" href="{% url 'recipe:site_user_login' %}">ログイン</a>
+                    <a class="nav-link" href="{% url 'recipe:site_user_signin' %}">ログイン</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="{% url 'recipe:site_user_signup' %}">ユーザ登録</a>
                 </li>
                 {% endif %}
             </ul>

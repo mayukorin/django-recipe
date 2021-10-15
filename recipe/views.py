@@ -1,14 +1,17 @@
 from django.shortcuts import render, redirect
+from django.urls import reverse_lazy
 from django.views.generic import View
-from .models import Recipe, Category
-from .forms import SiteUserRegisterForm, SiteUserLoginForm, LoginForm
+from .models import Recipe, Category, SiteUser
+from .forms import SiteUserRegisterForm, SiteUserLoginForm, SignInForm, SignUpForm
 from django.contrib.auth import login as auth_login, logout as auth_logout
 import json
 from django.http import HttpResponse
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView as AuthLoginView
+from django.contrib.auth.views import LogoutView as AuthLogoutView
 from django.contrib.messages.views import SuccessMessageMixin
+from django.views.generic import CreateView
 
 
 # Create your views here.
@@ -139,12 +142,37 @@ class SiteUserLoginView(View):
         print(request.POST.get('next'))
         return redirect("recipe:ingredient_search")
 
-class LoginView(SuccessMessageMixin, AuthLoginView):
+class SignInView(SuccessMessageMixin, AuthLoginView):
 
-    template_name = 'recipe/siteUser/login.html'
-    authentication_form = LoginForm
+    template_name = 'recipe/siteUser/signin.html'
+    authentication_form = SignInForm
     success_message = 'ログインしました'
 
+class SignOutView(SuccessMessageMixin, AuthLogoutView):
+
+    success_message = 'ログアウトしました'
+
+
+class SignUpView(CreateView):
+
+    model = SiteUser
+    form_class = SignUpForm
+    success_url = reverse_lazy('recipe:random')
+
+    def post(self, request, *args, **kwargs):
+        response = super().post(request, *args, **kwargs)
+
+        if self.object is not None:
+            new_site_user = self.object
+            new_site_user.set_password(new_site_user.password)
+            new_site_user.save()
+            auth_login(request, new_site_user)
+            messages.success(self.request, 'アカウント登録が完了しました')
+        
+        return response
+
+
+'''
 
 # ログアウト
 class SiteUserLogoutView(LoginRequiredMixin, View):
@@ -156,3 +184,5 @@ class SiteUserLogoutView(LoginRequiredMixin, View):
         messages.success(request, "ログアウトしました")
 
         return redirect("recipe:site_user_login")
+
+'''

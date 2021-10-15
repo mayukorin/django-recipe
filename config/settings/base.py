@@ -118,3 +118,4 @@ AUTH_USER_MODEL = 'recipe.SiteUser'
 
 LOGIN_URL = '/recipe/siteUser/login'
 LOGIN_REDIRECT_URL = '/recipe/random'
+LOGOUT_REDIRECT_URL = '/recipe/random'

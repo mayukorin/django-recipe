@@ -51,6 +51,54 @@ class SiteUserRegisterForm(forms.ModelForm):
         # ユニーク制約を自動でバリデーション
         super().clean()
 
+class SignUpForm(forms.ModelForm):
+    class Meta:
+        model = SiteUser
+
+        fields = (
+            "username",
+            "email",
+            "password",
+        )
+
+        labels = {
+            "password": "パスワード",
+        }
+
+        widgets = {
+            "username": forms.TextInput(),
+            "password": forms.PasswordInput(),
+        }
+
+        error_messages = {
+            "username": {
+                "required" : "ユーザ名を入力してください",
+                "max_length" : "名前は150字以内で入力してください"
+            },
+            "password": {
+                "required" : "パスワードを入力してください"
+            },
+            "email" : {
+                "required" : "メールアドレスを入力してください",
+                "unique" : "そのメールアドレスは既に使われています",                                  
+                "invalid" : "メールアドレスは正しい形式で入力してください"
+            }
+        }
+
+    password2 = forms.CharField(
+        label="確認用パスワード", required=True, error_messages={'required': '確認用パスワードを入力してください'}, widget=forms.PasswordInput(),
+    )
+
+
+    def clean(self):
+
+        password = self.cleaned_data.get("password")
+        password2 = self.cleaned_data.get("password2")
+        if password != password2:
+            raise forms.ValidationError("パスワードと確認用パスワードが一致しません")
+        # ユニーク制約を自動でバリデーション
+        super().clean()
+
 
 
 class SiteUserLoginForm(forms.Form):
@@ -88,7 +136,7 @@ class SiteUserLoginForm(forms.Form):
         return self.site_user_cache
 
 
-class LoginForm(AuthenticationForm):
+class SignInForm(AuthenticationForm):
 
     username = forms.EmailField(
         widget=forms.TextInput(attrs={'autofocus': True}),
@@ -111,12 +159,5 @@ class LoginForm(AuthenticationForm):
     error_messages = {
         'invalid_login' : 'メールアドレスかパスワードが間違っています',
         'inactive' : 'アカウントが有効ではありません',
-        'username' : {
-            'required': 'メールアドレスを入力してください',
-            'invalid' : 'メールアドレスは正しい形式で入力してください'
-        },
-        'password' : {
-            'required' : 'パスワードを入力してください'
-        }
     }
 
