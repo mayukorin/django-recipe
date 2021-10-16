@@ -26,12 +26,12 @@ class RandomRecipeView(ListView):
         
 
 
-class SearchRecipeForIngredientView(View):
-    def get(self, request, *args, **kwargs):
-
-        search_categories = Category.objects.all().prefetch_related("ingredients")
-        context = {"search_categories": search_categories}
-        return render(request, "recipe/search_for_ingredient.html", context)
+class SearchRecipeForIngredientView(ListView):
+    
+    model = Category
+    queryset = Category.objects.all().prefetch_related("ingredients")
+    context_object_name = 'search_categories'
+    template_name = 'recipe/search_for_ingredient.html'
 
 
 class ResultRecipeForIngredientView(View):
