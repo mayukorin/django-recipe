@@ -11,19 +11,19 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView as AuthLoginView
 from django.contrib.auth.views import LogoutView as AuthLogoutView
 from django.contrib.messages.views import SuccessMessageMixin
-from django.views.generic import CreateView
+from django.views.generic import CreateView, ListView
 
 
 # Create your views here.
 
 
-class RandomRecipeView(View):
-    def get(self, request, *args, **kwargs):
+class RandomRecipeView(ListView):
 
-        random_recipes = Recipe.objects.order_by("?")[:5]
-        context = {"random_recipes": random_recipes}
-
-        return render(request, "recipe/random.html", context)
+    model = Recipe
+    queryset = Recipe.objects.order_by("?")[:5]
+    context_object_name = 'random_recipes'
+    template_name = 'recipe/random.html'
+        
 
 
 class SearchRecipeForIngredientView(View):
@@ -171,18 +171,3 @@ class SignUpView(CreateView):
         
         return response
 
-
-'''
-
-# ログアウト
-class SiteUserLogoutView(LoginRequiredMixin, View):
-    def get(self, request, *args, **kwargs):
-
-        if request.user.is_authenticated:
-            auth_logout(request)
-
-        messages.success(request, "ログアウトしました")
-
-        return redirect("recipe:site_user_login")
-
-'''
