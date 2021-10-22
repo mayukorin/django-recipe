@@ -72,7 +72,7 @@ class SiteUser(AbstractUser):
         "username",
     ]
 
-    favorite_recipes = models.ManyToManyField(Recipe)
+    favorite_recipes = models.ManyToManyField(Recipe, related_name='favorite_users')
 
     def is_favorite_recipe(self, recipe_pk):
 
