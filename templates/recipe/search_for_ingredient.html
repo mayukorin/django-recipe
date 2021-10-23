@@ -22,11 +22,11 @@
 						<li>
 							<div class="image_box m-2">
 								{% with imag_url=ingredient.name|ingredient_img_path %}
-								<img class="thumbnail" src="{% static imag_url %}" alt="{{ingredient.name}}" id="10-276">
+								<img class="thumbnail" src="{% static imag_url %}" alt="{{ingredient.name}}">
 								<div class="row">
 									<div class="col-12">{{ ingredient.name }} </div>
 								</div>
-								<input class="disabled_checkbox" type="checkbox"  name="ingredients" id="10-276" value="{{ingredient.id}}">
+								<input class="disabled_checkbox" type="checkbox"  name="ingredients"  value="{{ingredient.id}}">
 								{% endwith %}
 							</div>
 						</li>

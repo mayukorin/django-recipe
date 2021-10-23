@@ -54,6 +54,7 @@ class ResultRecipeForIngredientView(ListView):
     def get(self, request, *args, **kwargs):
         self.user_pk = request.user.pk if request.user.is_authenticated else 0
         self.ingredient_id_list = self.request.GET.getlist("ingredients")
+        print(self.ingredient_id_list)
         return super().get(request, *args, **kwargs)
 
     def get_queryset(self):
