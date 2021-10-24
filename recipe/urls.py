@@ -8,6 +8,7 @@ urlpatterns = [
     path('result_for_ingredient', views.ResultRecipeForIngredientView.as_view(), name='ingredient_result'),
     # path('siteUser/register', views.SiteUserRegisterView.as_view(), name='site_user_register'),
     path('siteUser/signup', views.SignUpView.as_view(), name='site_user_signup'),
+    path('sietUser/property-change/<int:pk>', views.UserPropertyChangeView.as_view(), name='site_user_property_change'),
     # path('siteUser/login', views.SiteUserLoginView.as_view(), name='site_user_login'),
     path('siteUser/signin', views.SignInView.as_view(), name='site_user_signin'),
     # path('siteUser/logout', views.SiteUserLogoutView.as_view(), name='site_user_logout'),

@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views.generic import View
 from .models import Ingredient, Recipe, Category, SiteUser
-from .forms import SiteUserRegisterForm, SiteUserLoginForm, SignInForm, SignUpForm
+from .forms import SiteUserRegisterForm, SiteUserLoginForm, SignInForm, SignUpForm, UserPropertyChangeForm
 from django.contrib.auth import login as auth_login, logout as auth_logout
 import json
 from django.http import HttpResponse
@@ -12,7 +12,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView as AuthLoginView
 from django.contrib.auth.views import LogoutView as AuthLogoutView
 from django.contrib.messages.views import SuccessMessageMixin
-from django.views.generic import CreateView, ListView
+from django.views.generic import CreateView, ListView, UpdateView
 from django.db.models import Q, FilteredRelation
 from django.db.models import Count
 
@@ -151,4 +151,27 @@ class SignUpView(CreateView):
             messages.success(self.request, 'アカウント登録が完了しました')
         
         return response
+
+
+class UserPropertyChangeView(LoginRequiredMixin, UpdateView):
+
+    model = SiteUser
+    form_class = UserPropertyChangeForm
+    success_url = reverse_lazy('recipe:random')
+    template_name = 'recipe/siteUser/property-change.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            messages.error(request, "ログインしてください", extra_tags='danger')
+            return self.handle_no_permission()
+        return super().dispatch(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        response = super().post(request, *args, **kwargs)
+        if self.get_form().is_valid():
+            messages.success(self.request, 'アカウントの情報を変更しました')
+        
+        return response
+
+
 

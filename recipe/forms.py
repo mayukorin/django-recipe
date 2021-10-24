@@ -100,6 +100,34 @@ class SignUpForm(forms.ModelForm):
         super().clean()
 
 
+class UserPropertyChangeForm(forms.ModelForm):
+    class Meta:
+        model = SiteUser
+
+        fields = (
+            "username",
+            "email",
+        )
+
+
+        widgets = {
+            "username": forms.TextInput(),
+        }
+
+        error_messages = {
+            "username": {
+                "required" : "ユーザ名を入力してください",
+                "max_length" : "名前は150字以内で入力してください"
+            },
+            "email" : {
+                "required" : "メールアドレスを入力してください",
+                "unique" : "そのメールアドレスは既に使われています",                                  
+                "invalid" : "メールアドレスは正しい形式で入力してください"
+            }
+        }
+
+
+
 
 class SiteUserLoginForm(forms.Form):
 
