@@ -15,6 +15,8 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.views.generic import CreateView, ListView, UpdateView
 from django.db.models import Q, FilteredRelation
 from django.db.models import Count
+from django.views.decorators.cache import never_cache
+from django.utils.decorators import method_decorator
 
 
 # Create your views here.
@@ -123,15 +125,27 @@ class DestroyFavoriteView(LoginRequiredMixin, View):
             return HttpResponse(json_response, content_type="application/json")
 
 
-class SignInView(SuccessMessageMixin, AuthLoginView):
+class SignInView(AuthLoginView):
 
     template_name = 'recipe/siteUser/signin.html'
     authentication_form = SignInForm
-    success_message = 'ログインしました'
+    
+    def post(self, request, *args, **kwargs):
+        response = super().post(request, *args, **kwargs)
+        print("okkkk")
+        if self.get_form().is_valid():
+            messages.success(request, 'ログインしました')
+        return response
 
-class SignOutView(SuccessMessageMixin, AuthLogoutView):
+class SignOutView(AuthLogoutView):
 
-    success_message = 'ログアウトしました'
+
+    @method_decorator(never_cache)
+    def dispatch(self, request, *args, **kwargs):
+        
+        response = super().dispatch(request, *args, **kwargs)
+        messages.success(request, 'ログアウトしました')
+        return response
 
 
 class SignUpView(CreateView):
@@ -169,7 +183,7 @@ class UserPropertyChangeView(LoginRequiredMixin, UpdateView):
     def post(self, request, *args, **kwargs):
         response = super().post(request, *args, **kwargs)
         if self.get_form().is_valid():
-            messages.success(self.request, 'アカウントの情報を変更しました')
+            messages.success(self.request, 'アカウント情報を変更しました')
         
         return response
 
