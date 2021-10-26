@@ -3,15 +3,14 @@ from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views.generic import View
 from .models import Ingredient, Recipe, Category, SiteUser
-from .forms import SiteUserRegisterForm, SiteUserLoginForm, SignInForm, SignUpForm, UserPropertyChangeForm
+from .forms import SignInForm, SignUpForm, UserPropertyChangeForm, PasswordEditForm
 from django.contrib.auth import login as auth_login, logout as auth_logout
 import json
 from django.http import HttpResponse
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.auth.views import LoginView as AuthLoginView
+from django.contrib.auth.views import LoginView as AuthLoginView, PasswordChangeView as AuthPasswordChangeView, PasswordChangeDoneView as AuthPasswordChangeDoneView
 from django.contrib.auth.views import LogoutView as AuthLogoutView
-from django.contrib.messages.views import SuccessMessageMixin
 from django.views.generic import CreateView, ListView, UpdateView
 from django.db.models import Q, FilteredRelation
 from django.db.models import Count
@@ -186,6 +185,23 @@ class UserPropertyChangeView(LoginRequiredMixin, UpdateView):
             messages.success(self.request, 'アカウント情報を変更しました')
         
         return response
+
+
+class PasswordEditView(AuthPasswordChangeView):
+
+    form_class = PasswordEditForm
+    template_name = 'recipe/siteUser/password-change.html'
+    success_url = reverse_lazy('recipe:random')
+
+    def post(self, request, *args, **kwargs):
+        if self.get_form().is_valid():
+            # パスワードが変更される前に先に実行
+            messages.success(self.request, 'パスワードの変更が完了しました')
+        response = super().post(request, *args, **kwargs)
+        return response
+
+
+
 
 
 

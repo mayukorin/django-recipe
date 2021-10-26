@@ -1,7 +1,8 @@
 from django import forms
 from .models import SiteUser
 from django.core.exceptions import ObjectDoesNotExist
-from django.contrib.auth.forms import AuthenticationForm, UsernameField
+from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm
+from django.core.exceptions import ValidationError
 
 class SiteUserRegisterForm(forms.ModelForm):
     class Meta:
@@ -126,6 +127,66 @@ class UserPropertyChangeForm(forms.ModelForm):
             }
         }
 
+class PasswordEditForm(PasswordChangeForm):
+
+    
+    new_password1 = forms.CharField(
+        label= '新しいパスワード',
+        strip=False,
+        widget=forms.PasswordInput(attrs={'autocomplete': 'current-password'}),
+        error_messages={
+            'required' : '新しいパスワードを入力してください',
+        }
+    )
+
+    new_password2 = forms.CharField(
+        label= '確認用パスワード',
+        strip=False,
+        widget=forms.PasswordInput(attrs={'autocomplete': 'current-password'}),
+        error_messages={
+            'required' : '確認用パスワードを入力してください',
+        }
+    )
+
+    old_password = forms.CharField(
+        label= '現在のパスワード',
+        strip=False,
+        widget=forms.PasswordInput(attrs={'autocomplete': 'current-password'}),
+        error_messages={
+            'required' : '現在のパスワードを入力してください',
+        }
+    )
+
+    error_messages = {
+        'password_mismatch' : '新しいパスワードと確認用パスワードが一致しません',
+        'password_incorrect': '現在のパスワードが正しくありません',
+    } 
+
+    def clean_new_password2(self):
+        password1 = self.cleaned_data.get('new_password1')
+        password2 = self.cleaned_data.get('new_password2')
+        if password1 and password2:
+            if password1 != password2:
+                raise ValidationError(
+                    self.error_messages['password_mismatch'],
+                    code='password_mismatch',
+                )
+        return password2
+
+    def clean_old_password(self):
+        """
+        Validate that the old_password field is correct.
+        """
+        old_password = self.cleaned_data["old_password"]
+        print(old_password)
+        print(self.user.check_password(old_password))
+        print("----")
+        if not self.user.check_password(old_password):
+            raise ValidationError(
+                self.error_messages['password_incorrect'],
+                code='password_incorrect',
+            )
+        return old_password
 
 
 
