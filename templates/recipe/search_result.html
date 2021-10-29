@@ -3,6 +3,8 @@
 
 <h1>検索結果</h1>
 <div id="recipe_result" class="container">
+	{% include "recipe/pagination.html" %}
 	{% include "recipe/_recipe_index.html" with recipes=result_recipes template_name="result" %}
+	{% include "recipe/pagination.html" %}
 </div>
 {% endblock %}

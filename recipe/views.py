@@ -18,6 +18,7 @@ from django.views.decorators.cache import never_cache
 from django.utils.decorators import method_decorator
 
 
+
 # Create your views here.
 
 
@@ -26,6 +27,7 @@ class RandomRecipeView(ListView):
     model = Recipe
     context_object_name = 'random_recipes'
     template_name = 'recipe/random.html'
+    paginate_by = 5
 
     def get(self, request, *args, **kwargs):
         self.user_pk = request.user.pk if request.user.is_authenticated else 0
@@ -33,7 +35,7 @@ class RandomRecipeView(ListView):
 
     def get_queryset(self):
 
-        queryset = Recipe.objects.annotate(favorite_login_user=FilteredRelation('favorite_users', condition=Q(favorite_users__pk=self.user_pk)), favorite_flag=Count('favorite_login_user')).order_by("?")[:5]
+        queryset = Recipe.objects.annotate(favorite_login_user=FilteredRelation('favorite_users', condition=Q(favorite_users__pk=self.user_pk)), favorite_flag=Count('favorite_login_user')).order_by("?")
         return queryset
         
 
@@ -51,6 +53,7 @@ class ResultRecipeForIngredientView(ListView):
     model = Recipe
     context_object_name = 'result_recipes'
     template_name = 'recipe/search_result.html'
+    paginate_by = 5
 
     def get(self, request, *args, **kwargs):
         self.user_pk = request.user.pk if request.user.is_authenticated else 0
@@ -74,6 +77,7 @@ class FavoriteRecipeIndexView(LoginRequiredMixin, ListView):
     model = Recipe
     context_object_name = 'favorite_recipes'
     template_name = 'recipe/favorite_recipe.html'
+    paginate_by = 5
 
 
     def dispatch(self, request, *args, **kwargs):
