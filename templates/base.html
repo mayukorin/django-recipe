@@ -20,6 +20,9 @@
 
         <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
             <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+                <li class="nav-item active">
+                    <a class="nav-link" href="{% url 'recipe:ingredient_search' %}">材料名でレシピ検索</a>
+                </li>
             {% if user.is_authenticated %}
                 <li class="nav-item active">
                     <a class="nav-link" href="{% url 'recipe:favorite_recipe' %}">お気に入りレシピ</a>
