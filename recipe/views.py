@@ -111,6 +111,13 @@ class FavoriteRecipeIndexView(LoginRequiredMixin, ListView):
 
 
 class MakeFavoriteView(LoginRequiredMixin, View):
+
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            messages.error(request, "ログインしてください", extra_tags='danger')
+            return self.handle_no_permission()
+        return super().dispatch(request, *args, **kwargs)
+
     def post(self, request, *args, **kwargs):
 
         if request.is_ajax():
@@ -125,6 +132,13 @@ class MakeFavoriteView(LoginRequiredMixin, View):
 
 
 class DestroyFavoriteView(LoginRequiredMixin, View):
+
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            messages.error(request, "ログインしてください", extra_tags='danger')
+            return self.handle_no_permission()
+        return super().dispatch(request, *args, **kwargs)
+        
     def post(self, request, *args, **kwargs):
 
         if request.is_ajax():
@@ -145,7 +159,6 @@ class SignInView(AuthLoginView):
     
     def post(self, request, *args, **kwargs):
         response = super().post(request, *args, **kwargs)
-        print("okkkk")
         if self.get_form().is_valid():
             messages.success(request, 'ログインしました')
         return response
@@ -201,11 +214,18 @@ class UserPropertyChangeView(LoginRequiredMixin, UpdateView):
         return response
 
 
-class PasswordEditView(AuthPasswordChangeView):
+class PasswordEditView(LoginRequiredMixin, AuthPasswordChangeView):
 
     form_class = PasswordEditForm
     template_name = 'recipe/siteUser/password-change.html'
     success_url = reverse_lazy('recipe:random')
+
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            messages.error(request, "ログインしてください", extra_tags='danger')
+            return self.handle_no_permission()
+        return super().dispatch(request, *args, **kwargs)
+
 
     def post(self, request, *args, **kwargs):
         if self.get_form().is_valid():
