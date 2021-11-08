@@ -26,7 +26,7 @@ class RandomRecipeView(ListView):
 
     model = Recipe
     context_object_name = 'random_recipes'
-    template_name = 'recipe/random.html'
+    template_name = 'recipe/random_recipe.html'
     paginate_by = 5
 
     def get(self, request, *args, **kwargs):
@@ -52,7 +52,7 @@ class ResultRecipeForIngredientView(ListView):
 
     model = Recipe
     context_object_name = 'result_recipes'
-    template_name = 'recipe/search_result.html'
+    template_name = 'recipe/search_result_recipe.html'
     paginate_by = 5
 
     def get(self, request, *args, **kwargs):
@@ -179,6 +179,7 @@ class SignUpView(CreateView):
     model = SiteUser
     form_class = SignUpForm
     success_url = reverse_lazy('recipe:random')
+    template_name = 'recipe/siteUser/signup.html'
 
     def post(self, request, *args, **kwargs):
         response = super().post(request, *args, **kwargs)
