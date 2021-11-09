@@ -34,7 +34,6 @@ $(document).ready(function() {
 
    $(document).on('click', '.favorite-make-button', function(event) {
         let recipe_id = $(this).val();
-        console.log(recipe_id);
         event.preventDefault();
         $.ajax({
             url: "/recipe/make_favorite/",

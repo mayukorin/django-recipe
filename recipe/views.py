@@ -83,7 +83,7 @@ class ResultRecipeForIngredientView(ListView):
 
 class FavoriteRecipeIndexView(LoginRequiredMixin, ListView):
 
-    permission_denied_message = "ログインしてください"
+    # permission_denied_message = "ログインしてください"
     model = Recipe
     context_object_name = 'favorite_recipes'
     template_name = 'recipe/favorite_recipe.html'
