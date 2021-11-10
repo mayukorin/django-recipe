@@ -162,32 +162,6 @@ class PasswordEditForm(PasswordChangeForm):
         'password_incorrect': '現在のパスワードが正しくありません',
     } 
 
-    def clean_new_password2(self):
-        password1 = self.cleaned_data.get('new_password1')
-        password2 = self.cleaned_data.get('new_password2')
-        if password1 and password2:
-            if password1 != password2:
-                raise ValidationError(
-                    self.error_messages['password_mismatch'],
-                    code='password_mismatch',
-                )
-        return password2
-
-    def clean_old_password(self):
-        """
-        Validate that the old_password field is correct.
-        """
-        old_password = self.cleaned_data["old_password"]
-        print(old_password)
-        print(self.user.check_password(old_password))
-        print("----")
-        if not self.user.check_password(old_password):
-            raise ValidationError(
-                self.error_messages['password_incorrect'],
-                code='password_incorrect',
-            )
-        return old_password
-
 
 
 class SiteUserLoginForm(forms.Form):
