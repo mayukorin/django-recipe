@@ -64,6 +64,9 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
+            'builtins': [
+                'recipe.templatetags.recipe_custom_tags'
+            ]
         },
     },
 ]
@@ -112,3 +115,9 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 AUTH_USER_MODEL = 'recipe.SiteUser'
+
+LOGIN_URL = '/recipe/siteUser/login'
+LOGIN_REDIRECT_URL = '/recipe/random'
+LOGOUT_REDIRECT_URL = '/recipe/random'
+
+AUTH_PASSWORD_VALIDATORS = []

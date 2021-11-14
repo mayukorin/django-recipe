@@ -34,7 +34,6 @@ $(document).ready(function() {
 
    $(document).on('click', '.favorite-make-button', function(event) {
         let recipe_id = $(this).val();
-        console.log(recipe_id);
         event.preventDefault();
         $.ajax({
             url: "/recipe/make_favorite/",
@@ -56,7 +55,6 @@ $(document).ready(function() {
 
     $(document).on('click', '.favorite-destroy-button', function(event) {
         let recipe_id = $(this).val();
-        console.log($(this).attr('class'));
         event.preventDefault();
         let template_name = $(this).data('template');
         $.ajax({
@@ -71,6 +69,8 @@ $(document).ready(function() {
             recipe_id = data["recipe_id"]
             if (template_name == "favorite_recipe") {
                 $(`#recipe-${recipe_id}-article`).html("");
+                let recipe_cnt = $('.recipe-img').length;
+                if (recipe_cnt == 0) $(`#favorite_recipe`).html(`<h1>お気に入りレシピがありません</h1>`);
             } else {
                 $(`#recipe-${recipe_id}-favorite-button`).html(
                     `<button type="button"  class="btn btn-success m-2 favorite-make-button" value=${recipe_id}>

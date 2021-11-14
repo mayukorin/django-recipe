@@ -1,6 +1,12 @@
 {% extends "base.html" %}
 {% block content %}
-<div id="recipe_result" class="container">
-	{% include "recipe/_recipe_index.html" with recipes=favorite_recipes template_name="favorite_recipe" %}
+<div id="favorite_recipe" class="container">
+	{% if favorite_recipes|length > 0 %}
+		{% include "recipe/pagination.html" %}
+		{% include "recipe/_recipe_index.html" with recipes=favorite_recipes template_name="favorite_recipe" %}
+		{% include "recipe/pagination.html"%}
+	{% else %}
+		<h1>お気に入りレシピがありません</h1>
+	{% endif %}
 </div>
 {% endblock %}

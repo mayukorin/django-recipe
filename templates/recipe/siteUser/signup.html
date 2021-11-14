@@ -4,23 +4,23 @@
         <div class="alert alert-danger">
             <ul>
                 {% for non_field_error in form.non_field_errors %}
-                <li>{{non_field_error}}</li>
+                    <li>{{non_field_error}}</li>
                 {% endfor %}
             </ul>
         </div>
     {% endif %}
-    <form method="post" novalidate="novalidate">
+    <form action="{% url 'recipe:site_user_signup' %}" method="post" novalidate="novalidate">
         {% for item in form %}
             <div class="form-group">
                 <label>{{item.label}}</label>
-                <input name="{{item.name}}" class="form-control {% if item.errors %}is-invalid{% endif %}"
-                    type="{{item.field.widget.input_type}}">
+                <input class="form-control {% if item.errors %}is-invalid{% endif %}" name="{{item.name}}" 
+                    type="{{item.field.widget.input_type}}" value="{%if item.value != None %}{{item.value}}{% endif %}">
                 {% if item.errors %}
-                <div class="invalid-feedback">{{item.errors.0}}</div>
+                    <div class="invalid-feedback">{{item.errors.0}}</div>
                 {% endif %}
             </div>
         {% endfor %}
         {% csrf_token %}
-        <button class="btn btn-primary" type="submit">ログイン</button>
+        <button class="btn btn-primary" type="submit">登録</button>
     </form>
 {% endblock %}

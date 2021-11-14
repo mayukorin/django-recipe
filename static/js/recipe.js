@@ -6,22 +6,21 @@ $(document).ready(function() {
       
     // 画像がクリックされた時の処理です。
     $('img.thumbnail').on('click', function() {
-      console.log("id");
-        var this_id = $(this).prop('id');
+
       if (!$(this).is('.checked')) {
         // チェックが入っていない画像をクリックした場合、チェックを入れます。
         $(this).addClass('checked');
-        $(this).next().prop('checked',true);
+        $(this).siblings('input').prop('checked',true);
       } else {
         // チェックが入っている画像をクリックした場合、チェックを外します。
         $(this).removeClass('checked');
-        $(this).next().prop('checked',false);
+        $(this).siblings('input').prop('checked',false);
       }
     });
     $('img.thumbnail').on('reset', function() {
         //リセット時、checkクラスをoffにする
         $(this).removeClass('checked');
-        $(this).next().prop('checked',false);
+        $(this).siblings('input').prop('checked',false);
     });
     $('#clear').click(function(){
         $('img.thumbnail').removeClass('checked');

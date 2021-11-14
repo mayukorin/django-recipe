@@ -5,6 +5,9 @@ from django.contrib.auth.models import AbstractUser, UserManager
 class Category(models.Model):
     name = models.CharField(max_length=100, default="")
 
+    def __str__(self):
+        return self.name
+
 
 class Ingredient(models.Model):
     name = models.CharField(max_length=100, default="")
@@ -28,6 +31,10 @@ class Recipe(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class TodayIngredientOrder(models.Model):
+    order = models.IntegerField(default=0)
 
 
 class SiteUserManager(UserManager):
@@ -69,8 +76,4 @@ class SiteUser(AbstractUser):
         "username",
     ]
 
-    favorite_recipes = models.ManyToManyField(Recipe)
-
-    def is_favorite_recipe(self, recipe_pk):
-
-        return self.favorite_recipes.filter(pk=recipe_pk).exists()
+    favorite_recipes = models.ManyToManyField(Recipe, related_name="favorite_users")
