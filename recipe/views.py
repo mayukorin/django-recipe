@@ -164,6 +164,7 @@ class SignInView(AuthLoginView):
         if self.get_form().is_valid():
             messages.success(request, "ログインしました")
         return response
+        
 
 
 class SignOutView(AuthLogoutView):
