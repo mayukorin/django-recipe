@@ -224,62 +224,50 @@ class TestSignInForm(TestCase):
             'username': 'same@example.com',
             'password': 'pass'
         }
-        form = SignInForm(input_data)
-        self.assertFalse(form.is_valid())
-        self.assertEqual(form.is_valid(), ['アカウントが有効ではありません'])
+        form = SignInForm(data=input_data)
+        self.assertTrue(form.is_valid())
 
-    '''
-    def test_with_new_password_1_blank(self):
+    
+    def test_with_password_blank(self):
         input_data = {
-            'new_password1' : ' ',
-            'new_password2' : 'newpass',
-            'old_password' : 'pass'
+            'username': 'same@example.com',
+            'password': ' '
         }
-        form = PasswordEditForm(self.user, input_data)
+        form = SignInForm(data=input_data)
         self.assertFalse(form.is_valid())
-        self.assertEqual(form.errors['new_password2'], ['新しいパスワードと確認用パスワードが一致しません'])
-
-    def test_with_new_password_2_blank(self):
+        # self.assertEqual(form.non_field_errors(), ['メールアドレスかパスワードが間違っています'])
+        self.assertEqual(form.errors['password'], ['パスワードを入力してください'])
+    
+    def test_with_username_blank(self):
         input_data = {
-            'new_password1' : 'newpass',
-            'new_password2' : ' ',
-            'old_password' : 'pass'
+            'username': ' ',
+            'password': 'pass'
         }
-        form = PasswordEditForm(self.user, input_data)
+        form = SignInForm(data=input_data)
         self.assertFalse(form.is_valid())
-        self.assertEqual(form.errors['new_password2'], ['新しいパスワードと確認用パスワードが一致しません'])
+        self.assertEqual(form.errors['username'], ['メールアドレスを入力してください'])
 
-    def test_with_old_password_blank(self):
+    def test_with_invalid_username_blank(self):
         input_data = {
-            'new_password1' : 'newpass',
-            'new_password2' : 'newpass',
-            'old_password' : ' '
+            'username': 'same',
+            'password': 'pass'
         }
-        form = PasswordEditForm(self.user, input_data)
+        form = SignInForm(data=input_data)
         self.assertFalse(form.is_valid())
-        self.assertEqual(form.errors['old_password'], ['現在のパスワードが正しくありません'])
+        self.assertEqual(form.errors['username'], ['メールアドレスは正しい形式で入力してください'])
 
-    def test_with_not_same_password(self):
+
+    def test_with_wrong_password(self):
         input_data = {
-            'new_password1' : 'newpass',
-            'new_password2' : 'newpasss',
-            'old_password' : ' '
+            'username': 'same@example.com',
+            'password': 'pas'
         }
-        form = PasswordEditForm(self.user, input_data)
+        form = SignInForm(data=input_data)
         self.assertFalse(form.is_valid())
-        self.assertEqual(form.errors['new_password2'], ['新しいパスワードと確認用パスワードが一致しません'])
+        self.assertEqual(form.non_field_errors(), ['メールアドレスかパスワードが間違っています'])
 
-    def test_with_wrong_old_password(self):
-        input_data = {
-            'new_password1' : 'newpass',
-            'new_password2' : 'newpass',
-            'old_password' : 'passs'
-        }
-        form = PasswordEditForm(self.user, input_data)
-        self.assertFalse(form.is_valid())
-        self.assertEqual(form.errors['old_password'], ['現在のパスワードが正しくありません'])
-
-    '''
+   
+    
 
 
 class TestPasswordEditForm(TestCase):
@@ -311,7 +299,7 @@ class TestPasswordEditForm(TestCase):
         }
         form = PasswordEditForm(self.user, input_data)
         self.assertFalse(form.is_valid())
-        self.assertEqual(form.errors['new_password2'], ['新しいパスワードと確認用パスワードが一致しません'])
+        self.assertEqual(form.errors['new_password1'], ['新しいパスワードを入力してください'])
 
     def test_with_new_password_2_blank(self):
         input_data = {
@@ -321,7 +309,7 @@ class TestPasswordEditForm(TestCase):
         }
         form = PasswordEditForm(self.user, input_data)
         self.assertFalse(form.is_valid())
-        self.assertEqual(form.errors['new_password2'], ['新しいパスワードと確認用パスワードが一致しません'])
+        self.assertEqual(form.errors['new_password2'], ['確認用パスワードを入力してください'])
 
     def test_with_old_password_blank(self):
         input_data = {
@@ -331,13 +319,13 @@ class TestPasswordEditForm(TestCase):
         }
         form = PasswordEditForm(self.user, input_data)
         self.assertFalse(form.is_valid())
-        self.assertEqual(form.errors['old_password'], ['現在のパスワードが正しくありません'])
+        self.assertEqual(form.errors['old_password'], ['現在のパスワードを入力してください'])
 
     def test_with_not_same_password(self):
         input_data = {
             'new_password1' : 'newpass',
             'new_password2' : 'newpasss',
-            'old_password' : ' '
+            'old_password' : 'pass'
         }
         form = PasswordEditForm(self.user, input_data)
         self.assertFalse(form.is_valid())
