@@ -16,6 +16,7 @@ from django.contrib.auth.views import LogoutView as AuthLogoutView
 from django.views.generic import CreateView, ListView, UpdateView
 from django.db.models import Q, FilteredRelation
 from django.db.models import Count
+from django.shortcuts import redirect
 
 
 # Create your views here.
@@ -159,7 +160,9 @@ class SignInView(AuthLoginView):
     template_name = "recipe/siteUser/signin.html"
     authentication_form = SignInForm
 
+
     def post(self, request, *args, **kwargs):
+       
         response = super().post(request, *args, **kwargs)
         if self.get_form().is_valid():
             messages.success(request, "ログインしました")
@@ -181,6 +184,11 @@ class SignUpView(CreateView):
     form_class = SignUpForm
     success_url = reverse_lazy("recipe:random")
     template_name = "recipe/siteUser/signup.html"
+
+    def get(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            return redirect('recipe:random')
+        return super().get(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
         response = super().post(request, *args, **kwargs)
