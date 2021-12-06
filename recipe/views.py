@@ -1,3 +1,4 @@
+from django.contrib.messages.api import success
 from django.db.models.query_utils import FilteredRelation
 from django.urls import reverse_lazy
 from django.views.generic import View
@@ -16,7 +17,7 @@ from django.contrib.auth.views import LogoutView as AuthLogoutView
 from django.views.generic import CreateView, ListView, UpdateView
 from django.db.models import Q, FilteredRelation
 from django.db.models import Count
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
 
 
 # Create your views here.
@@ -160,6 +161,11 @@ class SignInView(AuthLoginView):
     template_name = "recipe/siteUser/signin.html"
     authentication_form = SignInForm
 
+    def get(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            return redirect('recipe:random')
+        return super().get(request, *args, **kwargs)
+
 
     def post(self, request, *args, **kwargs):
        
@@ -170,7 +176,7 @@ class SignInView(AuthLoginView):
         
 
 
-class SignOutView(AuthLogoutView):
+class SignOutView(LoginRequiredMixin, AuthLogoutView):
     def dispatch(self, request, *args, **kwargs):
 
         response = super().dispatch(request, *args, **kwargs)
@@ -202,7 +208,7 @@ class SignUpView(CreateView):
 
         return response
 
-
+'''
 class UserPropertyChangeView(LoginRequiredMixin, UpdateView):
 
     model = SiteUser
@@ -222,6 +228,31 @@ class UserPropertyChangeView(LoginRequiredMixin, UpdateView):
             messages.success(self.request, "アカウント情報を変更しました")
 
         return response
+
+'''
+class UserPropertyChangeView(LoginRequiredMixin, View):
+
+
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            messages.error(request, "ログインしてください", extra_tags="danger")
+            return self.handle_no_permission()
+        return super().dispatch(request, *args, **kwargs)
+
+    def get(self, request, *args, **kwargs):
+        
+        form = UserPropertyChangeForm(instance=request.user)
+        return render(request, 'recipe/siteUser/property-change.html', { 'form': form} )
+
+    def post(self, request, *args, **kwargs):
+        form = UserPropertyChangeForm(request.POST, instance=request.user)
+        if form.is_valid():
+            form.save()
+            messages.success(self.request, "アカウント情報の変更が完了しました")
+            return redirect('recipe:random')
+        else:
+            return render(request, 'recipe/siteUser/property-change.html', { 'form': form} )
+
 
 
 class PasswordEditView(LoginRequiredMixin, AuthPasswordChangeView):
