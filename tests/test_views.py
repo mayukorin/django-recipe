@@ -1,7 +1,7 @@
 from django.http import response
 from django.test import TestCase
 from django.contrib.auth import get_user_model
-
+from django.contrib.auth.hashers import check_password
 
 class TestSignUpView(TestCase):
 
@@ -169,7 +169,7 @@ class TestUserPropertyChangeView(TestCase):
         self.assertEqual(self.user.username, 'dcba')
         self.assertEqual(self.user.email, 'aa@example.com')
 
-    def test_post_success_with_same_email(self):
+    def test_post_with_same_email(self):
         logged_in = self.client.login(username=self.user.email, password="pass")
         self.assertTrue(logged_in)
         response = self.client.post('/recipe/siteUser/property-change/', {
@@ -179,3 +179,33 @@ class TestUserPropertyChangeView(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertFormError(response, 'form', 'email', 'そのメールアドレスは既に使われています')
         self.assertTemplateUsed(response, 'recipe/siteUser/property-change.html')
+
+
+class TestPasswordEditView(TestCase):
+
+    def setUp(self):
+        self.user = get_user_model().objects.create_user(
+            email="ad@example.com",
+            password="pass",
+            username="abcd"
+        )
+
+    def test_get_success(self):
+        logged_in = self.client.login(username=self.user.email, password="pass")
+        self.assertTrue(logged_in)
+        response = self.client.get('/recipe/siteUser/password-change/')
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(response.context['form'].errors)
+        self.assertTemplateUsed(response, 'recipe/siteUser/password-change.html')
+
+    def test_post_success(self):
+        logged_in = self.client.login(username=self.user.email, password="pass")
+        self.assertTrue(logged_in)
+        response = self.client.post('/recipe/siteUser/password-change/', {
+            'new_password1' : 'ssap',
+            'new_password2' : 'ssap',
+            'old_password' : 'pass',
+        })
+        self.assertRedirects(response, '/recipe/random')
+        self.user = get_user_model().objects.get(pk=self.user.pk)
+        self.assertTrue(check_password('ssap', self.user.password))

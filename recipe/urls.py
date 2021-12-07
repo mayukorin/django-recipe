@@ -16,5 +16,5 @@ urlpatterns = [
     path('make_favorite/', views.MakeFavoriteView.as_view(), name='make_favorite'),
     path('destroy_favorite/', views.DestroyFavoriteView.as_view(), name='destroy_favorite'),
     path('favorite_recipe', views.FavoriteRecipeIndexView.as_view(), name='favorite_recipe'),
-    path('siteUser/password-change', views.PasswordEditView.as_view(), name='site_user_password_change'),
+    path('siteUser/password-change/', views.PasswordEditView.as_view(), name='site_user_password_change'),
 ]
