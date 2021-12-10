@@ -209,3 +209,19 @@ class TestPasswordEditView(TestCase):
         self.assertRedirects(response, '/recipe/random')
         self.user = get_user_model().objects.get(pk=self.user.pk)
         self.assertTrue(check_password('ssap', self.user.password))
+
+
+class TestSignOutView(TestCase):
+
+    def setUp(self):
+        self.user = get_user_model().objects.create_user(
+            email="ad@example.com",
+            password="pass",
+            username="abcd"
+        )
+
+    def test_get_success(self):
+        logged_in = self.client.login(username=self.user.email, password="pass")
+        self.assertTrue(logged_in)
+        response = self.client.get('/recipe/siteUser/signout/')
+        self.assertRedirects(response, '/recipe/random')
