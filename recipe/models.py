@@ -15,6 +15,7 @@ class Ingredient(models.Model):
         Category, on_delete=models.CASCADE, null=True, related_name="ingredients"
     )
     api_id = models.CharField(max_length=100, default="")
+    english_name = models.CharField(null=True, blank=True, max_length=100)
 
     def __str__(self):
         return self.name
@@ -76,4 +77,5 @@ class SiteUser(AbstractUser):
         "username",
     ]
 
-    favorite_recipes = models.ManyToManyField(Recipe, related_name="favorite_users")
+    favorite_recipes = models.ManyToManyField(
+        Recipe, related_name="favorite_users")

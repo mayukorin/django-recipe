@@ -2,7 +2,7 @@ from django.contrib.messages.api import success
 from django.db.models.query_utils import FilteredRelation
 from django.urls import reverse_lazy
 from django.views.generic import View
-from .models import Recipe, Category, SiteUser
+from .models import Ingredient, Recipe, Category, SiteUser
 from .forms import SignInForm, SignUpForm, UserPropertyChangeForm, PasswordEditForm
 from django.contrib.auth import login as auth_login
 import json
@@ -53,6 +53,27 @@ class SearchRecipeForIngredientView(ListView):
     template_name = "recipe/search_for_ingredient.html"
 
 
+class SearchIngredientByEnglishName(View):
+
+    def get(self, request, *args, **kwargs):
+
+        ingredients_list = []
+        print(self.request.GET.getlist("ingredient_english_names[]"))
+        for ingredient_english_name in self.request.GET.getlist("ingredient_english_names[]"):
+            ingredient = Ingredient.objects.filter(
+                english_name=ingredient_english_name).first()
+            print(ingredient)
+            print(type(ingredient))
+            if ingredient is not None:
+                ingredient_id_and_name = {}
+                ingredient_id_and_name['pk'] = ingredient.pk
+                ingredient_id_and_name['name'] = ingredient.name
+                ingredients_list.append(ingredient_id_and_name)
+        print(ingredients_list)
+        json_response = json.dumps(ingredients_list)
+        return HttpResponse(json_response, content_type="application/json")
+
+
 class ResultRecipeForIngredientView(ListView):
 
     model = Recipe
@@ -63,6 +84,7 @@ class ResultRecipeForIngredientView(ListView):
     def get(self, request, *args, **kwargs):
         self.user_pk = request.user.pk if request.user.is_authenticated else 0
         self.ingredient_id_list = self.request.GET.getlist("ingredients")
+        print(self.ingredient_id_list)
         return super().get(request, *args, **kwargs)
 
     def get_queryset(self):
@@ -166,14 +188,12 @@ class SignInView(AuthLoginView):
             return redirect('recipe:random')
         return super().get(request, *args, **kwargs)
 
-
     def post(self, request, *args, **kwargs):
-       
+
         response = super().post(request, *args, **kwargs)
         if self.get_form().is_valid():
             messages.success(request, "ログインしました")
         return response
-        
 
 
 class SignOutView(LoginRequiredMixin, AuthLogoutView):
@@ -208,6 +228,7 @@ class SignUpView(CreateView):
 
         return response
 
+
 '''
 class UserPropertyChangeView(LoginRequiredMixin, UpdateView):
 
@@ -230,8 +251,9 @@ class UserPropertyChangeView(LoginRequiredMixin, UpdateView):
         return response
 
 '''
-class UserPropertyChangeView(LoginRequiredMixin, View):
 
+
+class UserPropertyChangeView(LoginRequiredMixin, View):
 
     def dispatch(self, request, *args, **kwargs):
         if not request.user.is_authenticated:
@@ -240,9 +262,9 @@ class UserPropertyChangeView(LoginRequiredMixin, View):
         return super().dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
-        
+
         form = UserPropertyChangeForm(instance=request.user)
-        return render(request, 'recipe/siteUser/property-change.html', { 'form': form} )
+        return render(request, 'recipe/siteUser/property-change.html', {'form': form})
 
     def post(self, request, *args, **kwargs):
         form = UserPropertyChangeForm(request.POST, instance=request.user)
@@ -251,8 +273,7 @@ class UserPropertyChangeView(LoginRequiredMixin, View):
             messages.success(self.request, "アカウント情報の変更が完了しました")
             return redirect('recipe:random')
         else:
-            return render(request, 'recipe/siteUser/property-change.html', { 'form': form} )
-
+            return render(request, 'recipe/siteUser/property-change.html', {'form': form})
 
 
 class PasswordEditView(LoginRequiredMixin, AuthPasswordChangeView):
