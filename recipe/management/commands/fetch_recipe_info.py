@@ -13,7 +13,8 @@ class Command(BaseCommand):
 
         ingredients = Ingredient.objects.all().order_by('pk')
         target_ingredient = ingredients[today_order]
-        target_api_id = target_ingredient.api_id
+        # target_api_id = target_ingredient.api_id
+        target_api_id = "12-454"
 
         search_param = {
             "applicationId":[APP_ID],
