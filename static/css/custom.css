@@ -340,6 +340,8 @@ ul.image_list li .image_box {
     color: inherit;
 }
 
-.logo {
+.logo>a {
     padding-left: 60px;
 }
+
+

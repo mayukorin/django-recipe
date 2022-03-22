@@ -7,7 +7,7 @@ var VisionApiUrl = url + VisionApiKey;
 $(document).ready(function() {
   console.log("ok");
   $('#uploader').change(function(evt) {
-    console.log("uploader");
+    clear();
     getImageInfo(evt);
     clear();
     $(".ImageArea").removeClass("hidden");
@@ -18,6 +18,7 @@ $(document).ready(function() {
 
 function clear() {
   $('#checkboxes').text("");
+  $('.no_food').text("");
   $('#recognition_to_search_button').addClass("hidden");
 }
 
@@ -60,36 +61,44 @@ function getVisionAPIInfo(request) {
 }
 
 function showResult(result) {
-  var english_name_array = result.responses[0].localizedObjectAnnotations.map((object) => object.name);
-  console.log(english_name_array);
-  var english_name_set = new Set(english_name_array);
-  english_name_array = Array.from(english_name_set);
-  $.ajax({
-      url: "/recipe/search_ingredient_by_english_name/",
-      method: "GET",
-      dataType: "json",
-      data: {
-          'ingredient_english_names': english_name_array,
-      },
-  }).done(function(data) {
-      console.log(data);
-      if (data.length == 0) {
-        var alert_message = `<div class="alert alert-danger" role="alert">
+  if (result.responses[0].localizedObjectAnnotations == null) {
+    var alert_message = `<div class="alert alert-danger" role="alert">
                           食材が一つも識別されませんでした
                           </div>`;
-        $('.no_food').append($(alert_message));
-      } else {
-        $('#recognition_to_search_button').removeClass("hidden");
-        $.each(data, function(index, id_and_name) {
-          var check_form = `
-          <div class='custom-control custom-checkbox food_check'>
-          <input type="checkbox" class='custom-control-input' name='ingredients' id='custom-check-${index}' value=${id_and_name["pk"]}>
-          <label class='custom-control-label' for='custom-check-${index}'>${id_and_name["name"]}</label>
-          </div>`;
-          $('#checkboxes').append($(check_form));
-        });
-      }
-  });
+    $('.no_food').append($(alert_message));
+  } else {
+    var english_name_array = result.responses[0].localizedObjectAnnotations.map((object) => object.name);
+    console.log(english_name_array);
+    var english_name_set = new Set(english_name_array);
+    english_name_array = Array.from(english_name_set);
+    $.ajax({
+        url: "/recipe/search_ingredient_by_english_name/",
+        method: "GET",
+        dataType: "json",
+        data: {
+            'ingredient_english_names': english_name_array,
+        },
+    }).done(function(data) {
+        console.log(data);
+        if (data.length == 0) {
+          var alert_message = `<div class="alert alert-danger" role="alert">
+                            食材が一つも識別されませんでした
+                            </div>`;
+          $('.no_food').append($(alert_message));
+        } else {
+          $('#recognition_to_search_button').removeClass("hidden");
+          $.each(data, function(index, id_and_name) {
+            var check_form = `
+            <div class='custom-control custom-checkbox food_check'>
+            <input type="checkbox" class='custom-control-input' name='ingredients' id='custom-check-${index}' value=${id_and_name["pk"]}>
+            <label class='custom-control-label' for='custom-check-${index}'>${id_and_name["name"]}</label>
+            </div>`;
+            $('#checkboxes').append($(check_form));
+          });
+        }
+      });
+    }
+  }
 /*
     english_name_set.forEach((english_name, index) => {
       console.log(english_name);
@@ -114,4 +123,3 @@ function showResult(result) {
     }
   });
   */
-}
