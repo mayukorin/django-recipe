@@ -23,7 +23,7 @@ from django.shortcuts import redirect, render
 # Create your views here.
 
 
-class RandomRecipeView(ListView):
+class RecipeRandomListView(ListView):
 
     model = Recipe
     context_object_name = "random_recipes"
@@ -40,7 +40,7 @@ class RandomRecipeView(ListView):
         
 
 
-class SearchRecipeForIngredientView(ListView):
+class CategoryListView(ListView):
 
     model = Category
     queryset = Category.objects.all().prefetch_related("ingredients")
@@ -48,7 +48,7 @@ class SearchRecipeForIngredientView(ListView):
     template_name = "recipe/search_for_ingredient.html"
 
 
-class SearchIngredientByEnglishName(View):
+class IngredientSearchByEnglishNameListView(View):
 
     def get(self, request, *args, **kwargs):
 
@@ -69,7 +69,7 @@ class SearchIngredientByEnglishName(View):
         return HttpResponse(json_response, content_type="application/json")
 
 
-class ResultRecipeForIngredientView(ListView):
+class RecipeSearchByIngredientListView(ListView):
 
     model = Recipe
     context_object_name = "result_recipes"
@@ -102,7 +102,7 @@ class ResultRecipeForIngredientView(ListView):
         return context
 
 
-class FavoriteRecipeIndexView(LoginRequiredMixin, ListView):
+class RecipeFavoriteListView(LoginRequiredMixin, ListView):
 
     model = Recipe
     context_object_name = "favorite_recipes"
@@ -128,7 +128,7 @@ class FavoriteRecipeIndexView(LoginRequiredMixin, ListView):
         return queryset
 
 
-class MakeFavoriteView(LoginRequiredMixin, View):
+class FavoriteCreateView(LoginRequiredMixin, View):
     def dispatch(self, request, *args, **kwargs):
         if not request.user.is_authenticated:
             messages.error(request, "ログインしてください", extra_tags="danger")
@@ -148,7 +148,7 @@ class MakeFavoriteView(LoginRequiredMixin, View):
             return HttpResponse(json_response, content_type="application/json")
 
 
-class DestroyFavoriteView(LoginRequiredMixin, View):
+class FavoriteDestroyView(LoginRequiredMixin, View):
     def dispatch(self, request, *args, **kwargs):
         if not request.user.is_authenticated:
             messages.error(request, "ログインしてください", extra_tags="danger")
