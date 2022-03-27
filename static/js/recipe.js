@@ -26,6 +26,9 @@ $(document).ready(function() {
         $('img.thumbnail').removeClass('checked');
         $('input:checkbox[name="categories[]"]').prop('checked',false);
     });
+    $('.recipe-click-area').click(function() {
+      window.location.href = $(this).data('link');
+    });
   });
   $(window).on('load',function(){
       $('input:checkbox[name="categories[]"]').prop('checked',false);

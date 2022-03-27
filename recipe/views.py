@@ -1,7 +1,8 @@
+from django.contrib.messages.api import success
 from django.db.models.query_utils import FilteredRelation
 from django.urls import reverse_lazy
 from django.views.generic import View
-from .models import Recipe, Category, SiteUser
+from .models import Ingredient, Recipe, Category, SiteUser
 from .forms import SignInForm, SignUpForm, UserPropertyChangeForm, PasswordEditForm
 from django.contrib.auth import login as auth_login
 import json
@@ -16,34 +17,30 @@ from django.contrib.auth.views import LogoutView as AuthLogoutView
 from django.views.generic import CreateView, ListView, UpdateView
 from django.db.models import Q, FilteredRelation
 from django.db.models import Count
+from django.shortcuts import redirect, render
 
 
 # Create your views here.
 
 
-class RandomRecipeView(ListView):
+class RecipeRandomListView(ListView):
 
     model = Recipe
     context_object_name = "random_recipes"
     template_name = "recipe/random_recipe.html"
     paginate_by = 5
 
-    def get(self, request, *args, **kwargs):
-        self.user_pk = request.user.pk if request.user.is_authenticated else 0
-        return super().get(request, *args, **kwargs)
+    def get_queryset(self, **kwargs):
 
-    def get_queryset(self):
-
-        queryset = Recipe.objects.annotate(
-            favorite_login_user=FilteredRelation(
-                "favorite_users", condition=Q(favorite_users__pk=self.user_pk)
-            ),
-            favorite_flag=Count("favorite_login_user"),
-        ).order_by("?")
+        queryset = super().get_queryset(**kwargs)
+        signin_user_pk = self.request.user.pk if self.request.user.is_authenticated else 0
+        queryset = queryset.annotate(favorite_signin_user=FilteredRelation("favorite_users", condition=Q(favorite_users__pk=signin_user_pk)), 
+            favorite_flag=Count("favorite_signin_user"),).order_by("?")
         return queryset
+        
 
 
-class SearchRecipeForIngredientView(ListView):
+class CategoryListView(ListView):
 
     model = Category
     queryset = Category.objects.all().prefetch_related("ingredients")
@@ -51,28 +48,47 @@ class SearchRecipeForIngredientView(ListView):
     template_name = "recipe/search_for_ingredient.html"
 
 
-class ResultRecipeForIngredientView(ListView):
+class IngredientSearchByEnglishNameListView(View):
+
+    def get(self, request, *args, **kwargs):
+
+        ingredients_list = []
+        print(self.request.GET.getlist("ingredient_english_names[]"))
+        for ingredient_english_name in self.request.GET.getlist("ingredient_english_names[]"):
+            ingredient = Ingredient.objects.filter(
+                english_name=ingredient_english_name).first()
+            print(ingredient)
+            print(type(ingredient))
+            if ingredient is not None:
+                ingredient_id_and_name = {}
+                ingredient_id_and_name['pk'] = ingredient.pk
+                ingredient_id_and_name['name'] = ingredient.name
+                ingredients_list.append(ingredient_id_and_name)
+        print(ingredients_list)
+        json_response = json.dumps(ingredients_list)
+        return HttpResponse(json_response, content_type="application/json")
+
+
+class RecipeSearchByIngredientListView(ListView):
 
     model = Recipe
     context_object_name = "result_recipes"
     template_name = "recipe/search_result_recipe.html"
     paginate_by = 5
 
-    def get(self, request, *args, **kwargs):
-        self.user_pk = request.user.pk if request.user.is_authenticated else 0
-        self.ingredient_id_list = self.request.GET.getlist("ingredients")
-        return super().get(request, *args, **kwargs)
 
-    def get_queryset(self):
-        queryset = Recipe.objects.filter()
-        for ingredient_id in self.ingredient_id_list:
+    def get_queryset(self, **kwargs):
+        queryset = super().get_queryset(**kwargs)
+        
+        for ingredient_id in self.request.GET.getlist("ingredients"):
             queryset = queryset.filter(ingredients=ingredient_id)
 
+        signin_user_pk = self.request.user.pk if self.request.user.is_authenticated else 0
         queryset = queryset.annotate(
-            favorite_login_user=FilteredRelation(
-                "favorite_users", condition=Q(favorite_users__pk=self.user_pk)
+            favorite_signin_user=FilteredRelation(
+                "favorite_users", condition=Q(favorite_users__pk=signin_user_pk)
             ),
-            favorite_flag=Count("favorite_login_user"),
+            favorite_flag=Count("favorite_signin_user"),
         )
         return queryset
 
@@ -80,13 +96,13 @@ class ResultRecipeForIngredientView(ListView):
 
         context = super().get_context_data(**kwargs)
         query_param = "&"
-        for ingredient_id in self.ingredient_id_list:
+        for ingredient_id in self.request.GET.getlist("ingredients"):
             query_param += "ingredients=" + ingredient_id + "&"
         context.update({"query_param": query_param})
         return context
 
 
-class FavoriteRecipeIndexView(LoginRequiredMixin, ListView):
+class RecipeFavoriteListView(LoginRequiredMixin, ListView):
 
     model = Recipe
     context_object_name = "favorite_recipes"
@@ -99,22 +115,20 @@ class FavoriteRecipeIndexView(LoginRequiredMixin, ListView):
             return self.handle_no_permission()
         return super().dispatch(request, *args, **kwargs)
 
-    def get(self, request, *args, **kwargs):
-        self.user_pk = request.user.pk if request.user.is_authenticated else 0
-        return super().get(request, *args, **kwargs)
 
-    def get_queryset(self):
-
-        queryset = Recipe.objects.annotate(
-            favorite_login_user=FilteredRelation(
-                "favorite_users", condition=Q(favorite_users__pk=self.user_pk)
+    def get_queryset(self, **kwargs):
+        queryset = super().get_queryset(**kwargs)
+        signin_user_pk = self.request.user.pk if self.request.user.is_authenticated else 0
+        queryset = queryset.annotate(
+            favorite_signin_user=FilteredRelation(
+                "favorite_users", condition=Q(favorite_users__pk=signin_user_pk)
             ),
-            favorite_flag=Count("favorite_login_user"),
-        ).filter(favorite_users__pk=self.user_pk)
+            favorite_flag=Count("favorite_signin_user"),
+        ).filter(favorite_users__pk=signin_user_pk)
         return queryset
 
 
-class MakeFavoriteView(LoginRequiredMixin, View):
+class FavoriteCreateView(LoginRequiredMixin, View):
     def dispatch(self, request, *args, **kwargs):
         if not request.user.is_authenticated:
             messages.error(request, "ログインしてください", extra_tags="danger")
@@ -134,7 +148,7 @@ class MakeFavoriteView(LoginRequiredMixin, View):
             return HttpResponse(json_response, content_type="application/json")
 
 
-class DestroyFavoriteView(LoginRequiredMixin, View):
+class FavoriteDestroyView(LoginRequiredMixin, View):
     def dispatch(self, request, *args, **kwargs):
         if not request.user.is_authenticated:
             messages.error(request, "ログインしてください", extra_tags="danger")
@@ -159,14 +173,20 @@ class SignInView(AuthLoginView):
     template_name = "recipe/siteUser/signin.html"
     authentication_form = SignInForm
 
+    def get(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            return redirect('recipe:random')
+        return super().get(request, *args, **kwargs)
+
     def post(self, request, *args, **kwargs):
+
         response = super().post(request, *args, **kwargs)
         if self.get_form().is_valid():
             messages.success(request, "ログインしました")
         return response
 
 
-class SignOutView(AuthLogoutView):
+class SignOutView(LoginRequiredMixin, AuthLogoutView):
     def dispatch(self, request, *args, **kwargs):
 
         response = super().dispatch(request, *args, **kwargs)
@@ -181,6 +201,11 @@ class SignUpView(CreateView):
     success_url = reverse_lazy("recipe:random")
     template_name = "recipe/siteUser/signup.html"
 
+    def get(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            return redirect('recipe:random')
+        return super().get(request, *args, **kwargs)
+
     def post(self, request, *args, **kwargs):
         response = super().post(request, *args, **kwargs)
 
@@ -194,6 +219,7 @@ class SignUpView(CreateView):
         return response
 
 
+'''
 class UserPropertyChangeView(LoginRequiredMixin, UpdateView):
 
     model = SiteUser
@@ -213,6 +239,31 @@ class UserPropertyChangeView(LoginRequiredMixin, UpdateView):
             messages.success(self.request, "アカウント情報を変更しました")
 
         return response
+
+'''
+
+
+class UserPropertyChangeView(LoginRequiredMixin, View):
+
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            messages.error(request, "ログインしてください", extra_tags="danger")
+            return self.handle_no_permission()
+        return super().dispatch(request, *args, **kwargs)
+
+    def get(self, request, *args, **kwargs):
+
+        form = UserPropertyChangeForm(instance=request.user)
+        return render(request, 'recipe/siteUser/property-change.html', {'form': form})
+
+    def post(self, request, *args, **kwargs):
+        form = UserPropertyChangeForm(request.POST, instance=request.user)
+        if form.is_valid():
+            form.save()
+            messages.success(self.request, "アカウント情報の変更が完了しました")
+            return redirect('recipe:random')
+        else:
+            return render(request, 'recipe/siteUser/property-change.html', {'form': form})
 
 
 class PasswordEditView(LoginRequiredMixin, AuthPasswordChangeView):

@@ -31,7 +31,6 @@ $.ajaxSetup({
 
 
 $(document).ready(function() {
-
    $(document).on('click', '.favorite-make-button', function(event) {
         let recipe_id = $(this).val();
         event.preventDefault();
@@ -43,7 +42,6 @@ $(document).ready(function() {
                 'recipe_id': recipe_id,
             },
         }).done(function(data) {
-            console.log(data);
             recipe_id = data["recipe_id"]
             $(`#recipe-${recipe_id}-favorite-button`).html(
                 `<button type="button"  class="btn btn-danger m-2 favorite-destroy-button" value=${recipe_id}>

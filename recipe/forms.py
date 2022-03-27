@@ -82,21 +82,21 @@ class PasswordEditForm(PasswordChangeForm):
 
     new_password1 = forms.CharField(
         label="新しいパスワード",
-        strip=False,
+        # strip=False,
         widget=forms.PasswordInput(attrs={"autocomplete": "current-password"}),
         error_messages={"required": "新しいパスワードを入力してください",},
     )
 
     new_password2 = forms.CharField(
         label="確認用パスワード",
-        strip=False,
+        # strip=False,
         widget=forms.PasswordInput(attrs={"autocomplete": "current-password"}),
         error_messages={"required": "確認用パスワードを入力してください",},
     )
 
     old_password = forms.CharField(
         label="現在のパスワード",
-        strip=False,
+        # strip=False,
         widget=forms.PasswordInput(attrs={"autocomplete": "current-password"}),
         error_messages={"required": "現在のパスワードを入力してください",},
     )
@@ -116,15 +116,18 @@ class SignInForm(AuthenticationForm):
             "invalid": "メールアドレスは正しい形式で入力してください",
         },
     )
-
+    
     password = forms.CharField(
         label="パスワード",
-        strip=False,
+        # strip=False,
+        required=True,
         widget=forms.PasswordInput(attrs={"autocomplete": "current-password"}),
         error_messages={"required": "パスワードを入力してください",},
     )
-
     error_messages = {
         "invalid_login": "メールアドレスかパスワードが間違っています",
         "inactive": "アカウントが有効ではありません",
     }
+    
+    
+    
