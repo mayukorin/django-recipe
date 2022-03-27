@@ -30,19 +30,14 @@ class RandomRecipeView(ListView):
     template_name = "recipe/random_recipe.html"
     paginate_by = 5
 
-    def get(self, request, *args, **kwargs):
-        self.user_pk = request.user.pk if request.user.is_authenticated else 0
-        return super().get(request, *args, **kwargs)
+    def get_queryset(self, **kwargs):
 
-    def get_queryset(self):
-
-        queryset = Recipe.objects.annotate(
-            favorite_login_user=FilteredRelation(
-                "favorite_users", condition=Q(favorite_users__pk=self.user_pk)
-            ),
-            favorite_flag=Count("favorite_login_user"),
-        ).order_by("?")
+        queryset = super().get_queryset(**kwargs)
+        signin_user_pk = self.request.user.pk if self.request.user.is_authenticated else 0
+        queryset = queryset.annotate(favorite_signin_user=FilteredRelation("favorite_users", condition=Q(favorite_users__pk=signin_user_pk)), 
+            favorite_flag=Count("favorite_signin_user"),).order_by("?")
         return queryset
+        
 
 
 class SearchRecipeForIngredientView(ListView):
@@ -81,22 +76,19 @@ class ResultRecipeForIngredientView(ListView):
     template_name = "recipe/search_result_recipe.html"
     paginate_by = 5
 
-    def get(self, request, *args, **kwargs):
-        self.user_pk = request.user.pk if request.user.is_authenticated else 0
-        self.ingredient_id_list = self.request.GET.getlist("ingredients")
-        print(self.ingredient_id_list)
-        return super().get(request, *args, **kwargs)
 
-    def get_queryset(self):
-        queryset = Recipe.objects.filter()
-        for ingredient_id in self.ingredient_id_list:
+    def get_queryset(self, **kwargs):
+        queryset = super().get_queryset(**kwargs)
+        
+        for ingredient_id in self.request.GET.getlist("ingredients"):
             queryset = queryset.filter(ingredients=ingredient_id)
 
+        signin_user_pk = self.request.user.pk if self.request.user.is_authenticated else 0
         queryset = queryset.annotate(
-            favorite_login_user=FilteredRelation(
-                "favorite_users", condition=Q(favorite_users__pk=self.user_pk)
+            favorite_signin_user=FilteredRelation(
+                "favorite_users", condition=Q(favorite_users__pk=signin_user_pk)
             ),
-            favorite_flag=Count("favorite_login_user"),
+            favorite_flag=Count("favorite_signin_user"),
         )
         return queryset
 
@@ -104,7 +96,7 @@ class ResultRecipeForIngredientView(ListView):
 
         context = super().get_context_data(**kwargs)
         query_param = "&"
-        for ingredient_id in self.ingredient_id_list:
+        for ingredient_id in self.request.GET.getlist("ingredients"):
             query_param += "ingredients=" + ingredient_id + "&"
         context.update({"query_param": query_param})
         return context
@@ -123,18 +115,16 @@ class FavoriteRecipeIndexView(LoginRequiredMixin, ListView):
             return self.handle_no_permission()
         return super().dispatch(request, *args, **kwargs)
 
-    def get(self, request, *args, **kwargs):
-        self.user_pk = request.user.pk if request.user.is_authenticated else 0
-        return super().get(request, *args, **kwargs)
 
-    def get_queryset(self):
-
-        queryset = Recipe.objects.annotate(
-            favorite_login_user=FilteredRelation(
-                "favorite_users", condition=Q(favorite_users__pk=self.user_pk)
+    def get_queryset(self, **kwargs):
+        queryset = super().get_queryset(**kwargs)
+        signin_user_pk = self.request.user.pk if self.request.user.is_authenticated else 0
+        queryset = queryset.annotate(
+            favorite_signin_user=FilteredRelation(
+                "favorite_users", condition=Q(favorite_users__pk=signin_user_pk)
             ),
-            favorite_flag=Count("favorite_login_user"),
-        ).filter(favorite_users__pk=self.user_pk)
+            favorite_flag=Count("favorite_signin_user"),
+        ).filter(favorite_users__pk=signin_user_pk)
         return queryset
 
 
