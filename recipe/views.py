@@ -69,6 +69,12 @@ class IngredientSearchByEnglishNameListView(View):
         json_response = json.dumps(ingredients_list)
         return HttpResponse(json_response, content_type="application/json")
 
+class IngredientVisionApiInfoView(View):
+    def post(self, request, *args, **kwargs):
+
+        responses = requests.post(settings.VISION_API_URL, request.POST["search_param"]).json()
+        return HttpResponse(json.dumps(responses), content_type="application/json")
+
 
 class RecipeSearchByIngredientListView(ListView):
 

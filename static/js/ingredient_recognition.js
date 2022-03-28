@@ -44,6 +44,21 @@ function makeRequest(dataUrl, callback) {
 
 function getVisionAPIInfo(request) {
 
+
+  $.ajax({
+    url: "/recipe/ingredients/vision_api_info/",
+    method: "POST",
+    dataType: "json",
+    data: {
+        'search_param': request,
+    },
+  }).done(function(result) {
+    console.log(result);
+    showResult(result);
+  }).fail(function(result) {
+    console.log('failed to load info');
+  });
+  /*
   $.ajax({
     url: VisionApiUrl,
     type: 'POST',
@@ -58,6 +73,7 @@ function getVisionAPIInfo(request) {
   }).fail(function(result) {
     console.log('failed to load info');
   });
+  */
 }
 
 function showResult(result) {
