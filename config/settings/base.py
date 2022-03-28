@@ -130,7 +130,7 @@ VISION_API_URL=env('VISION_API_URL')
 RAKUTEN_RECIPE_API_URL=env('RAKUTEN_RECIPE_API_URL')
 RAKUTEN_RECIPE_API_ID=env('RAKUTEN_RECIPE_API_ID')
 
-if os.environ.get('GITHUB_WORKFLOW'):
+if env('IS_GITHUB_WORKFLOW') == "yes":
     DATABASES = {
         'default': {
            'ENGINE': 'django.db.backends.postgresql',
