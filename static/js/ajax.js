@@ -65,7 +65,7 @@ $(document).ready(function() {
             },
         }).done(function(data) {
             
-            if (template_name == "favorite_recipe") {
+            if (template_name == "recipe_favorite_list") {
                 $(`#recipe-${recipe_id}-article`).html("");
                 let recipe_cnt = $('.recipe-img').length;
                 if (recipe_cnt == 0) $(`#favorite_recipe`).html(`<h1>お気に入りレシピがありません</h1>`);
