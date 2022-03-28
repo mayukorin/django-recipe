@@ -16,10 +16,11 @@ from django.views.generic import CreateView, ListView
 from django.db.models import Q, FilteredRelation
 from django.db.models import Count
 from django.shortcuts import redirect, render
+import requests
+from django.conf import settings
 
 
 # Create your views here.
-
 
 class RecipeRandomListView(ListView):
 
