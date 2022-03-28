@@ -34,6 +34,8 @@ jobs:
         echo "VISION_API_URL=${{ secrets.VISION_API_URL }}" >> .env
         echo "RAKUTEN_RECIPE_API_URL=${{ secrets.RAKUTEN_RECIPE_API_URL }}" >> .env
         echo "RAKUTEN_RECIPE_API_ID=${{ secrets.RAKUTEN_RECIPE_API_ID }}" >> .env
+    - name: Run migrations
+      run: python manage.py migrate
     - name: Run Tests
       run: |
         python manage.py test
