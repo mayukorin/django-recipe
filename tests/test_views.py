@@ -34,8 +34,8 @@ class TestSignUpView(TestCase):
         self.assertTrue(logged_in)
         # self.client.force_login(self.user)
         response = self.client.get('/recipe/site_user/signup/')
-        self.assertRedirects(response, '/recipe/random')
-        # self.assertTemplateUsed(response, 'recipe/random_recipe.html')
+        self.assertRedirects(response, '/recipe/recipes/random')
+        # self.assertTemplateUsed(response, 'recipe/recipes/random_recipe.html')
 
     def test_post_success(self):
         response = self.client.post('/recipe/site_user/signup/', {
@@ -44,7 +44,7 @@ class TestSignUpView(TestCase):
             'password' : 'password',
             'password2' : 'password',
         })
-        self.assertRedirects(response, '/recipe/random')
+        self.assertRedirects(response, '/recipe/recipes/random')
         self.assertTrue(get_user_model().objects.filter(username='user').exists())
 
     def test_with_same_username(self):
@@ -89,14 +89,14 @@ class TestSignInView(TestCase):
         logged_in = self.client.login(username=self.user.email, password="pass")
         self.assertTrue(logged_in)
         response = self.client.get('/recipe/site_user/signin/')
-        self.assertRedirects(response, '/recipe/random')
+        self.assertRedirects(response, '/recipe/recipes/random')
 
     def test_post_success(self):
         response = self.client.post('/recipe/site_user/signin/', {
             'username': 'ad@example.com',
             'password' : 'pass',
         })
-        self.assertRedirects(response, '/recipe/random')
+        self.assertRedirects(response, '/recipe/recipes/random')
        
 
     def test_with_wrong_password(self):
@@ -122,12 +122,12 @@ class TestSignOutView(TestCase):
         logged_in = self.client.login(username=self.user.email, password="pass")
         self.assertTrue(logged_in)
         response = self.client.get('/recipe/site_user/signout/')
-        self.assertRedirects(response, '/recipe/random')
+        self.assertRedirects(response, '/recipe/recipes/random')
 
     def test_get_by_unauthenticated_user(self):
         
         response = self.client.get('/recipe/site_user/signout/')
-        self.assertRedirects(response, '/recipe/random')
+        self.assertRedirects(response, '/recipe/recipes/random')
 
 
 class TestUserPropertyChangeView(TestCase):
@@ -155,7 +155,7 @@ class TestUserPropertyChangeView(TestCase):
     def test_get_by_unauthenticated_user(self):
         
         response = self.client.get('/recipe/site_user/property-change/')
-        # self.assertRedirects(response, '/recipe/random/')
+        # self.assertRedirects(response, '/recipe/recipes/random/')
 
     def test_post_success(self):
         logged_in = self.client.login(username=self.user.email, password="pass")
@@ -164,7 +164,7 @@ class TestUserPropertyChangeView(TestCase):
             'username': 'dcba',
             'email' : 'aa@example.com',
         })
-        self.assertRedirects(response, '/recipe/random')
+        self.assertRedirects(response, '/recipe/recipes/random')
         self.user = get_user_model().objects.get(pk=self.user.pk)
         self.assertEqual(self.user.username, 'dcba')
         self.assertEqual(self.user.email, 'aa@example.com')
@@ -206,7 +206,7 @@ class TestPasswordEditView(TestCase):
             'new_password2' : 'ssap',
             'old_password' : 'pass',
         })
-        self.assertRedirects(response, '/recipe/random')
+        self.assertRedirects(response, '/recipe/recipes/random')
         self.user = get_user_model().objects.get(pk=self.user.pk)
         self.assertTrue(check_password('ssap', self.user.password))
 
@@ -224,4 +224,4 @@ class TestSignOutView(TestCase):
         logged_in = self.client.login(username=self.user.email, password="pass")
         self.assertTrue(logged_in)
         response = self.client.get('/recipe/site_user/signout/')
-        self.assertRedirects(response, '/recipe/random')
+        self.assertRedirects(response, '/recipe/recipes/random')

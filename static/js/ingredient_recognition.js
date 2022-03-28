@@ -72,7 +72,7 @@ function showResult(result) {
     var english_name_set = new Set(english_name_array);
     english_name_array = Array.from(english_name_set);
     $.ajax({
-        url: "/recipe/search_ingredient_by_english_name/",
+        url: "/recipe/ingredients/search_by_english_name/",
         method: "GET",
         dataType: "json",
         data: {

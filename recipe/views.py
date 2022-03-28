@@ -36,7 +36,8 @@ class RecipeRandomListView(ListView):
         print(queryset)
         signin_user_pk = self.request.user.pk if self.request.user.is_authenticated else 0
         queryset = queryset.annotate(favorite_signin_user=FilteredRelation("favorite_users", condition=Q(favorite_users__pk=signin_user_pk)), 
-            favorite_flag=Count("favorite_signin_user"),).order_by("?")
+            favorite_flag=Count("favorite_signin_user"),)
+        print(queryset)
         return queryset
         
 
@@ -158,7 +159,7 @@ class SignInView(AuthLoginView):
 
     def get(self, request, *args, **kwargs):
         if request.user.is_authenticated:
-            return redirect('recipe:random')
+            return redirect('recipe:random_list')
         return super().get(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
@@ -181,12 +182,12 @@ class SignUpView(CreateView):
 
     model = SiteUser
     form_class = SignUpForm
-    success_url = reverse_lazy("recipe:random")
+    success_url = reverse_lazy("recipe:random_list")
     template_name = "recipe/site_user/signup.html"
 
     def get(self, request, *args, **kwargs):
         if request.user.is_authenticated:
-            return redirect('recipe:random')
+            return redirect('recipe:random_list')
         return super().get(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
@@ -221,7 +222,7 @@ class UserPropertyChangeView(LoginRequiredMixin, View):
         if form.is_valid():
             form.save()
             messages.success(self.request, "アカウント情報の変更が完了しました")
-            return redirect('recipe:random')
+            return redirect('recipe:random_list')
         else:
             return render(request, 'recipe/site_user/property-change.html', {'form': form})
 
@@ -230,7 +231,7 @@ class PasswordEditView(LoginRequiredMixin, AuthPasswordChangeView):
 
     form_class = PasswordEditForm
     template_name = "recipe/site_user/password-change.html"
-    success_url = reverse_lazy("recipe:random")
+    success_url = reverse_lazy("recipe:random_list")
 
     def dispatch(self, request, *args, **kwargs):
         if not request.user.is_authenticated:
