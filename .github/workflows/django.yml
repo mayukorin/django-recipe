@@ -47,13 +47,14 @@ jobs:
         echo "VISION_API_URL=${{ secrets.VISION_API_URL }}" >> .env
         echo "RAKUTEN_RECIPE_API_URL=${{ secrets.RAKUTEN_RECIPE_API_URL }}" >> .env
         echo "RAKUTEN_RECIPE_API_ID=${{ secrets.RAKUTEN_RECIPE_API_ID }}" >> .env
-        echo "IS_GITHUB_WORKFLOW=${{ secrets.IS_GITHUB_WORKFLOW }}" >> .env
+
     - name: Run migrations
       run: python manage.py migrate
       env:
         DB_HOST: db
         DB_PASSWORD: postgres
         DB_USER: postgres
+        IS_GITHUB_WORKFLOW: ok
        
     - name: Run Tests
       run: |
