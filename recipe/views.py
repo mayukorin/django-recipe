@@ -133,14 +133,8 @@ class FavoriteCreateView(LoginRequiredMixin, View):
         if request.is_ajax():
             favorite_recipe = Recipe.objects.get(id=request.POST["recipe_id"])
             request.user.favorite_recipes.add(favorite_recipe)
-
-            response_data = {}
-            response_data["recipe_id"] = request.POST["recipe_id"]
-
-            json_response = json.dumps(response_data)
-            return HttpResponse(json_response, content_type="application/json")
-
-
+            return HttpResponse(json.dumps({}), content_type="application/json")
+    
 class FavoriteDestroyView(LoginRequiredMixin, View):
     def dispatch(self, request, *args, **kwargs):
         if not request.user.is_authenticated:
@@ -153,13 +147,8 @@ class FavoriteDestroyView(LoginRequiredMixin, View):
         if request.is_ajax():
             favorite_recipe = Recipe.objects.get(id=request.POST["recipe_id"])
             request.user.favorite_recipes.remove(favorite_recipe)
-
-            response_data = {}
-            response_data["recipe_id"] = request.POST["recipe_id"]
-
-            json_response = json.dumps(response_data)
-            return HttpResponse(json_response, content_type="application/json")
-
+            return HttpResponse(json.dumps({}), content_type="application/json")
+            
 
 class SignInView(AuthLoginView):
 
@@ -211,29 +200,6 @@ class SignUpView(CreateView):
 
         return response
 
-
-'''
-class UserPropertyChangeView(LoginRequiredMixin, UpdateView):
-
-    model = SiteUser
-    form_class = UserPropertyChangeForm
-    success_url = reverse_lazy("recipe:random")
-    template_name = "recipe/siteUser/property-change.html"
-
-    def dispatch(self, request, *args, **kwargs):
-        if not request.user.is_authenticated:
-            messages.error(request, "ログインしてください", extra_tags="danger")
-            return self.handle_no_permission()
-        return super().dispatch(request, *args, **kwargs)
-
-    def post(self, request, *args, **kwargs):
-        response = super().post(request, *args, **kwargs)
-        if self.get_form().is_valid():
-            messages.success(self.request, "アカウント情報を変更しました")
-
-        return response
-
-'''
 
 
 class UserPropertyChangeView(LoginRequiredMixin, View):
