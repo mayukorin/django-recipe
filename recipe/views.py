@@ -232,7 +232,7 @@ class UserPropertyChangeView(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
 
         form = UserPropertyChangeForm(instance=request.user)
-        return render(request, "recipe/site_user/property-change.html", {"form": form})
+        return render(request, "recipe/site_user/property_change.html", {"form": form})
 
     def post(self, request, *args, **kwargs):
         form = UserPropertyChangeForm(request.POST, instance=request.user)
@@ -242,14 +242,14 @@ class UserPropertyChangeView(LoginRequiredMixin, View):
             return redirect("recipe:random_list")
         else:
             return render(
-                request, "recipe/site_user/property-change.html", {"form": form}
+                request, "recipe/site_user/property_change.html", {"form": form}
             )
 
 
 class PasswordEditView(LoginRequiredMixin, AuthPasswordChangeView):
 
     form_class = PasswordEditForm
-    template_name = "recipe/site_user/password-change.html"
+    template_name = "recipe/site_user/password_change.html"
     success_url = reverse_lazy("recipe:random_list")
 
     def dispatch(self, request, *args, **kwargs):

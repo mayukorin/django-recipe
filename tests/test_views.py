@@ -147,20 +147,20 @@ class TestUserPropertyChangeView(TestCase):
     def test_get_success(self):
         logged_in = self.client.login(username=self.user.email, password="pass")
         self.assertTrue(logged_in)
-        response = self.client.get('/recipe/site_user/property-change/')
+        response = self.client.get('/recipe/site_user/property_change/')
         self.assertEqual(response.status_code, 200)
         self.assertFalse(response.context['form'].errors)
-        self.assertTemplateUsed(response, 'recipe/site_user/property-change.html')
+        self.assertTemplateUsed(response, 'recipe/site_user/property_change.html')
 
     def test_get_by_unauthenticated_user(self):
         
-        response = self.client.get('/recipe/site_user/property-change/')
+        response = self.client.get('/recipe/site_user/property_change/')
         # self.assertRedirects(response, '/recipe/recipes/random/')
 
     def test_post_success(self):
         logged_in = self.client.login(username=self.user.email, password="pass")
         self.assertTrue(logged_in)
-        response = self.client.post('/recipe/site_user/property-change/', {
+        response = self.client.post('/recipe/site_user/property_change/', {
             'username': 'dcba',
             'email' : 'aa@example.com',
         })
@@ -172,13 +172,13 @@ class TestUserPropertyChangeView(TestCase):
     def test_post_with_same_email(self):
         logged_in = self.client.login(username=self.user.email, password="pass")
         self.assertTrue(logged_in)
-        response = self.client.post('/recipe/site_user/property-change/', {
+        response = self.client.post('/recipe/site_user/property_change/', {
             'username': 'dcba',
             'email' : 'da@example.com',
         })
         self.assertEqual(response.status_code, 200)
         self.assertFormError(response, 'form', 'email', 'そのメールアドレスは既に使われています')
-        self.assertTemplateUsed(response, 'recipe/site_user/property-change.html')
+        self.assertTemplateUsed(response, 'recipe/site_user/property_change.html')
 
 
 class TestPasswordEditView(TestCase):
@@ -193,15 +193,15 @@ class TestPasswordEditView(TestCase):
     def test_get_success(self):
         logged_in = self.client.login(username=self.user.email, password="pass")
         self.assertTrue(logged_in)
-        response = self.client.get('/recipe/site_user/password-change/')
+        response = self.client.get('/recipe/site_user/password_change/')
         self.assertEqual(response.status_code, 200)
         self.assertFalse(response.context['form'].errors)
-        self.assertTemplateUsed(response, 'recipe/site_user/password-change.html')
+        self.assertTemplateUsed(response, 'recipe/site_user/password_change.html')
 
     def test_post_success(self):
         logged_in = self.client.login(username=self.user.email, password="pass")
         self.assertTrue(logged_in)
-        response = self.client.post('/recipe/site_user/password-change/', {
+        response = self.client.post('/recipe/site_user/password_change/', {
             'new_password1' : 'ssap',
             'new_password2' : 'ssap',
             'old_password' : 'pass',
