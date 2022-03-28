@@ -44,8 +44,8 @@ urlpatterns = [
         name="ingredient_search_by_english_name_list",
     ),
     path(
-         "ingredients/vision_api_info/",
-         views.IngredientVisionApiInfoView.as_view(),
-         name="ingredient_vision_api_info",
-    )
+        "ingredients/vision_api_info/",
+        views.IngredientVisionApiInfoView.as_view(),
+        name="ingredient_vision_api_info",
+    ),
 ]
