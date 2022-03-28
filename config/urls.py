@@ -27,5 +27,5 @@ urlpatterns = [
         ),
         name="service-worker",
     ), 
-    re_path('', RedirectView.as_view(url='/recipe/random'))
+    re_path('', RedirectView.as_view(url='/recipe/recipes/random'))
 ]

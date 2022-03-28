@@ -1,10 +1,7 @@
 from django.core.management.base import BaseCommand
 import requests
 from recipe.models import Ingredient, Recipe, TodayIngredientOrder
-
-
-REQUEST_URL = "https://app.rakuten.co.jp/services/api/Recipe/CategoryRanking/20170426"
-APP_ID = "1054952264484319668"
+from django.conf import settings
 
 class Command(BaseCommand):
     def handle(self, *args, **options):
@@ -16,11 +13,11 @@ class Command(BaseCommand):
         target_api_id = target_ingredient.api_id
 
         search_param = {
-            "applicationId":[APP_ID],
+            "applicationId":[settings.RAKUTEN_RECIPE_API_ID],
             #"formatVersion":2,
             "categoryId": target_api_id
         }
-        responses = requests.get(REQUEST_URL, search_param).json()
+        responses = requests.get(settings.RAKUTEN_RECIPE_API_URL, search_param).json()
         # print(responses["result"])
 
         for recipe_result in responses["result"]:

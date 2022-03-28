@@ -4,7 +4,7 @@
 {% load recipe_custom_tags %}
 <h1>レシピ検索</h1>
 <p>使用する食材を選択してください</p>
-<form  action="{% url 'recipe:ingredient_result' %}" method="get">
+<form  action="{% url 'recipe:search_by_ingredient_list' %}" method="get">
 	<ul class="nav nav-tabs" role="tablist">
 		{% for category in search_categories %}
 			<li class="nav-item">

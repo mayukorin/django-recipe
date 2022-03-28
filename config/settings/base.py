@@ -12,6 +12,10 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 
 from pathlib import Path
 import os
+import environ
+
+env = environ.Env()
+env.read_env('.env')
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 PROJECT_NAME = os.path.basename(BASE_DIR)
@@ -116,8 +120,12 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 AUTH_USER_MODEL = 'recipe.SiteUser'
 
-LOGIN_URL = '/recipe/siteUser/login'
-LOGIN_REDIRECT_URL = '/recipe/random'
-LOGOUT_REDIRECT_URL = '/recipe/random'
+LOGIN_URL = '/recipe/site_user/login'
+LOGIN_REDIRECT_URL = '/recipe/recipes/random'
+LOGOUT_REDIRECT_URL = '/recipe/recipes/random'
 
 AUTH_PASSWORD_VALIDATORS = []
+
+VISION_API_URL=env('VISION_API_URL')
+RAKUTEN_RECIPE_API_URL=env('RAKUTEN_RECIPE_API_URL')
+RAKUTEN_RECIPE_API_ID=env('RAKUTEN_RECIPE_API_ID')

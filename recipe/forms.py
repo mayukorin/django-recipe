@@ -116,7 +116,7 @@ class SignInForm(AuthenticationForm):
             "invalid": "メールアドレスは正しい形式で入力してください",
         },
     )
-    
+
     password = forms.CharField(
         label="パスワード",
         # strip=False,
@@ -128,6 +128,3 @@ class SignInForm(AuthenticationForm):
         "invalid_login": "メールアドレスかパスワードが間違っています",
         "inactive": "アカウントが有効ではありません",
     }
-    
-    
-    

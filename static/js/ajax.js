@@ -42,7 +42,8 @@ $(document).ready(function() {
                 'recipe_id': recipe_id,
             },
         }).done(function(data) {
-            recipe_id = data["recipe_id"]
+            console.log("done");
+            console.log(recipe_id);
             $(`#recipe-${recipe_id}-favorite-button`).html(
                 `<button type="button"  class="btn btn-danger m-2 favorite-destroy-button" value=${recipe_id}>
                     お気に入り解除
@@ -64,8 +65,7 @@ $(document).ready(function() {
             },
         }).done(function(data) {
             
-            recipe_id = data["recipe_id"]
-            if (template_name == "favorite_recipe") {
+            if (template_name == "recipe_favorite_list") {
                 $(`#recipe-${recipe_id}-article`).html("");
                 let recipe_cnt = $('.recipe-img').length;
                 if (recipe_cnt == 0) $(`#favorite_recipe`).html(`<h1>お気に入りレシピがありません</h1>`);

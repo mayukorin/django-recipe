@@ -77,5 +77,4 @@ class SiteUser(AbstractUser):
         "username",
     ]
 
-    favorite_recipes = models.ManyToManyField(
-        Recipe, related_name="favorite_users")
+    favorite_recipes = models.ManyToManyField(Recipe, related_name="favorite_users")
