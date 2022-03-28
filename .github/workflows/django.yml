@@ -26,7 +26,7 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
     - name: Create env file
-    - shell: bash
+      shell: bash
       run: |
         touch .env
         echo "VISION_API_URL=${{ secrets.VISION_API_URL }}" >> .env
