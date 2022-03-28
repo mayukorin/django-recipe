@@ -53,18 +53,11 @@ class IngredientSearchByEnglishNameListView(View):
     def get(self, request, *args, **kwargs):
 
         ingredients_list = []
-        print(self.request.GET.getlist("ingredient_english_names[]"))
         for ingredient_english_name in self.request.GET.getlist("ingredient_english_names[]"):
-            ingredient = Ingredient.objects.filter(
-                english_name=ingredient_english_name).first()
-            print(ingredient)
-            print(type(ingredient))
-            if ingredient is not None:
-                ingredient_id_and_name = {}
-                ingredient_id_and_name['pk'] = ingredient.pk
-                ingredient_id_and_name['name'] = ingredient.name
-                ingredients_list.append(ingredient_id_and_name)
-        print(ingredients_list)
+            ingredient_english_name = Ingredient.objects.filter(
+                english_name=ingredient_english_name).values('pk', 'name')
+            if len(ingredient_english_name) == 1:
+                ingredients_list.append(ingredient_english_name[0])
         json_response = json.dumps(ingredients_list)
         return HttpResponse(json_response, content_type="application/json")
 
