@@ -137,7 +137,7 @@ if env('IS_GITHUB_WORKFLOW') == "yes":
            'NAME': 'postgres',
            'USER': 'postgres',
            'PASSWORD': 'postgres',
-           'HOST': 'db',
+           'HOST': 'dbb',
            'PORT': 5432,
         }
     }
