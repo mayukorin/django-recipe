@@ -130,8 +130,7 @@ VISION_API_URL=env('VISION_API_URL')
 RAKUTEN_RECIPE_API_URL=env('RAKUTEN_RECIPE_API_URL')
 RAKUTEN_RECIPE_API_ID=env('RAKUTEN_RECIPE_API_ID')
 
-print("iiiii")
-print(env('IS_GITHUB_WORKFLOW'))
+
 if env('IS_GITHUB_WORKFLOW') == "yes":
     print("okyes")
     DATABASES = {
@@ -140,7 +139,7 @@ if env('IS_GITHUB_WORKFLOW') == "yes":
            'NAME': 'postgres',
            'USER': 'postgres',
            'PASSWORD': 'postgres',
-           'HOST': 'dbb',
+           'HOST': '127.0.0.1',
            'PORT': 5432,
         }
     }
