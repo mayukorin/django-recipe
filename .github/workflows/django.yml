@@ -50,10 +50,7 @@ jobs:
         echo "IS_GITHUB_WORKFLOW=${{ secrets.IS_GITHUB_WORKFLOW }}" >> .env
     - name: Run migrations
       run: python manage.py migrate
-      env:
-        DB_HOST: db
-        DB_PASSWORD: postgres
-        DB_USER: postgres
+
        
     - name: Run Tests
       run: |
