@@ -1,8 +1,0 @@
-{% extends "base.html" %}
-{% block content %}
-<div id="recipe_result" class="container">
-	{% include "recipe/pagination.html" %}
-	{% include "recipe/_recipe_list.html" with recipes=random_recipes template_name="random_list" %}
-	{% include "recipe/pagination.html" %}
-</div>
-{% endblock %}
