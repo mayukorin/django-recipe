@@ -64,11 +64,15 @@ $(document).ready(function() {
                 'recipe_id': recipe_id,
             },
         }).done(function(data) {
-            
+            let base_url = $(location).attr('origin');
+            console.log(base_url);
             if (template_name == "recipe_favorite_list") {
-                $(`#recipe-${recipe_id}-article`).html("");
                 let recipe_cnt = $('.recipe-img').length;
-                if (recipe_cnt == 0) $(`#favorite_recipe`).html(`<h1>お気に入りレシピがありません</h1>`);
+                if (recipe_cnt == 1)  location.href = base_url + '/recipe/recipes/favorite';
+                else {
+                    console.log("not 0");
+                    $(`#recipe-${recipe_id}-article`).html("");
+                }
             } else {
                 $(`#recipe-${recipe_id}-favorite-button`).html(
                     `<button type="button"  class="btn btn-success m-2 favorite-make-button" value=${recipe_id}>
