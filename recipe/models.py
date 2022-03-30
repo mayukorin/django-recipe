@@ -3,18 +3,18 @@ from django.contrib.auth.models import AbstractUser, UserManager
 
 
 class Category(models.Model):
-    name = models.CharField(max_length=100, default="")
+    name = models.CharField(max_length=100)
 
     def __str__(self):
         return self.name
 
 
 class Ingredient(models.Model):
-    name = models.CharField(max_length=100, default="")
+    name = models.CharField(max_length=100)
     category = models.ForeignKey(
         Category, on_delete=models.CASCADE, null=True, related_name="ingredients"
     )
-    api_id = models.CharField(max_length=100, default="")
+    api_id = models.CharField(max_length=100)
     english_name = models.CharField(null=True, blank=True, max_length=100)
 
     def __str__(self):
@@ -25,9 +25,9 @@ class Recipe(models.Model):
     title = models.CharField(max_length=100)
     link = models.CharField(max_length=300, unique=True)
     img = models.CharField(max_length=300, unique=True)
-    publish_day = models.CharField(max_length=100, default="")
-    recipe_time = models.CharField(max_length=100, default="")
-    description = models.CharField(max_length=100, default="")
+    publish_day = models.CharField(max_length=100)
+    recipe_time = models.CharField(max_length=100)
+    description = models.CharField(max_length=100)
     ingredients = models.ManyToManyField(Ingredient)
 
     def __str__(self):
