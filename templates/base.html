@@ -175,8 +175,9 @@
 
     <script>
       if ("serviceWorker" in navigator) {
-        window.addEventListener("load", function () {
-          navigator.serviceWorker.register("{% url 'service-worker' %}").then(
+        $(window).on("load", function () {
+          console.log(navigator.constructor.name);
+          navigator.serviceWorker.register("{% static 'js/sw.js' %}").then(
             function (registration) {
               // Registration was successful
               console.log(
