@@ -20,5 +20,12 @@ from django.views.generic import RedirectView, TemplateView
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('recipe/', include('recipe.urls')),
+    path(
+        "sw.js",
+        TemplateView.as_view(
+            template_name="sw.js", content_type="application/javascript",
+        ),
+        name="service-worker",
+    ), 
     re_path('', RedirectView.as_view(url='/recipe/recipes/random'))
 ]
