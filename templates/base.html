@@ -175,20 +175,18 @@
 
     <script>
       if ("serviceWorker" in navigator) {
-        $(window).on("load", function () {
-          navigator.serviceWorker.register("{% url 'service-worker' %}").then(
-              console.log(
-                "ServiceWorker registration successful with scope: ",
-                registration.scope
-              );
-            },
-            function (err) {
-              // registration failed :(
-              console.log("ServiceWorker registration failed: ", err);
-            }
-          );
+        $(window).on("load", function() {
+            console.log("load");
+            navigator.serviceWorker.register("{% url 'service-worker' %}").then((registration) => {
+                    // Registration was successful
+                    console.log('ServiceWorker registration successful with scope: ', registration.scope);
+                })
+                .catch((err) => {
+                    // registration failed :(
+                    console.log('ServiceWorker registration failed: ', err);
+                });
         });
-      }
+    }
     </script>
   </body>
 </html>
