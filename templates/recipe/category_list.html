@@ -22,7 +22,7 @@
 						<li>
 							<div class="image_box m-2">
 								{% with imag_url=ingredient.name|ingredient_img_path %}
-								<img class="thumbnail" src="{% static imag_url %}" alt="{{ingredient.name}}">
+								<img class="thumbnail" src="{% static imag_url %}" alt="{{ingredient.name}}" loading="lazy">
 								<div class="row">
 									<div class="col-12">{{ ingredient.name }} </div>
 								</div>
