@@ -67,5 +67,9 @@ $(document).ready(function() {
   }
 
 
-
-  
+(function(){
+  new Progressive({
+    el: '#app',
+    lazyClass: 'lazy'
+  }).fire()
+})()

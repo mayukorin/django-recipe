@@ -7,3 +7,9 @@ register = template.Library()
 @stringfilter
 def ingredient_img_path(value):
     return "images/" + value + ".jpg"
+
+
+@register.filter
+@stringfilter
+def ingredient_mini_img_path(value):
+    return "images/" + value + "-mini.jpg"

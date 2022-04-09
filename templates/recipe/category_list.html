@@ -14,15 +14,21 @@
 			</li>
 		{% endfor %}
 	</ul>
-	<div class="tab-content">
+	<div class="tab-content" id="app">
 		{% for category in search_categories %}
 			<div class="tab-pane fade {% if category.id == 1 %} show active  {% endif %}" id="category{{category.id}}" role="tabpanel" aria-labelledby="category{{category.id}}-tab">
 				<ul class="image_list">
 					{% for ingredient in category.ingredients.all %}
 						<li>
 							<div class="image_box m-2">
-								{% with imag_url=ingredient.name|ingredient_img_path %}
-								<img class="thumbnail" src="{% static imag_url %}" alt="{{ingredient.name}}" loading="lazy">
+								{% with imag_url=ingredient.name|ingredient_img_path mini_imag_url=ingredient.name|ingredient_mini_img_path %}
+								{% if category.id == 1 %}
+									<div class="progressive image_box">
+										<img class="preview lazy thumbnail" data-src="{% static imag_url %}" src="{% static mini_imag_url %}" alt="{{ingredient.name}}">
+									</div>
+								{% else %}
+									<img class="thumbnail" src="{% static imag_url %}" alt="{{ingredient.name}}" loading="lazy">
+								{% endif %}
 								<div class="row">
 									<div class="col-12">{{ ingredient.name }} </div>
 								</div>
