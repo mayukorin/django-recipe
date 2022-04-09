@@ -18,6 +18,11 @@ ul.image_list li .image_box {
     cursor: pointer;
 }
 
+.progressive img.checked {
+    border: 6px solid blue;
+    box-sizing: border-box;
+}
+
 .image_box img.thumbnail.checked {
     border: 6px solid blue;
     box-sizing: border-box;

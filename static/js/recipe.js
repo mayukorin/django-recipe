@@ -5,25 +5,26 @@ $(document).ready(function() {
     });
       
     // 画像がクリックされた時の処理です。
-    $('img.thumbnail').on('click', function() {
-
-      if (!$(this).is('.checked')) {
+    $('.progressive').on('click', function() {
+      console.log("ok");
+      if (!$(this).children('img').is('.checked')) {
         // チェックが入っていない画像をクリックした場合、チェックを入れます。
-        $(this).addClass('checked');
+        console.log("check");
+        $(this).children('img').addClass('checked');
         $(this).siblings('input').prop('checked',true);
       } else {
         // チェックが入っている画像をクリックした場合、チェックを外します。
-        $(this).removeClass('checked');
+        $(this).children('img').removeClass('checked');
         $(this).siblings('input').prop('checked',false);
       }
     });
-    $('img.thumbnail').on('reset', function() {
+    $('.progressive').on('reset', function() {
         //リセット時、checkクラスをoffにする
-        $(this).removeClass('checked');
+        $(this).children('img').removeClass('checked');
         $(this).siblings('input').prop('checked',false);
     });
     $('#clear').click(function(){
-        $('img.thumbnail').removeClass('checked');
+      $('.progressive').children('img').removeClass('checked');
         $('input:checkbox[name="categories[]"]').prop('checked',false);
     });
     $('.recipe-click-area').click(function() {
