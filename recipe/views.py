@@ -168,7 +168,8 @@ class FavoriteDestroyView(LoginRequiredMixin, View):
         if request.is_ajax():
             favorite_recipe = Recipe.objects.get(id=request.POST["recipe_id"])
             request.user.favorite_recipes.remove(favorite_recipe)
-            return HttpResponse(json.dumps({}), content_type="application/json")
+            favorite_recipe_cnt = request.user.favorite_recipes.count()
+            return HttpResponse(json.dumps({"favorite_recipe_cnt": favorite_recipe_cnt}), content_type="application/json")
 
 
 class SignInView(AuthLoginView):
