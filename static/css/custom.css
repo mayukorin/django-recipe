@@ -351,4 +351,12 @@ ul.image_list li .image_box {
     padding-left: 60px;
 }
 
+.tab-content>.tab-pane {
+    height: 0px;
+    display: block;
+}
 
+.tab-content>.active {
+    height: auto;
+    display: block;
+}
