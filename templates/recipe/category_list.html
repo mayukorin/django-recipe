@@ -8,7 +8,7 @@
 	<ul class="nav nav-tabs" role="tablist">
 		{% for category in search_categories %}
 			<li class="nav-item">
-				<a class="nav-link {% if category.id == 1 %} active {% endif %}" id="category{{category.id}}-tab" data-toggle="tab" href="#category{{category.id}}" role="tab" aria-controls="category{{category.id}}" aria-selected="true">
+				<a class="nav-link category-tab {% if category.id == 1 %} active {% endif %} " id="category{{category.id}}-tab" data-toggle="tab" href="#category{{category.id}}" role="tab" aria-controls="category{{category.id}}" aria-selected="true">
 					{{ category.name }}
 				</a>
 			</li>
