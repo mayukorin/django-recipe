@@ -83,6 +83,7 @@ const urlsToCache = [
   'static/images/白菜-mini.jpg',
   'static/images/明太子・魚卵-mini.jpg',
 ];
+
 self.addEventListener('install', (event) => {
  console.log('install');
  event.waitUntil(
@@ -92,14 +93,18 @@ self.addEventListener('install', (event) => {
        return cache.addAll(urlsToCache);
      })
  );
+
 });
 self.addEventListener('fetch', (event) => {
  console.log('fetch');
+
  event.respondWith(
    caches
      .match(event.request)
      .then((response) => {
+       console.log(response);
        return response ? response : fetch(event.request);
      })
  );
+
 });
