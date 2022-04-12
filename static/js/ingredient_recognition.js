@@ -1,9 +1,5 @@
 'use strict';
 
-var VisionApiKey = 'AIzaSyDjE4Fytmz2rf7RgRY1C1fF-Y6U7j1oFN0';
-var url = 'https://vision.googleapis.com/v1/images:annotate?key=';
-var VisionApiUrl = url + VisionApiKey;
-
 $(document).ready(function() {
   console.log("ok");
   $('#uploader').change(function(evt) {

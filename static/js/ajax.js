@@ -31,7 +31,7 @@ $.ajaxSetup({
 
 
 $(document).ready(function() {
-   $(document).on('click', '.favorite-make-button', function(event) {
+   $('.favorite-make-button').on('click', function(event) {
         let recipe_id = $(this).val();
         event.preventDefault();
         $.ajax({
@@ -42,8 +42,6 @@ $(document).ready(function() {
                 'recipe_id': recipe_id,
             },
         }).done(function(data) {
-            console.log("done");
-            console.log(recipe_id);
             $(`#recipe-${recipe_id}-favorite-button`).html(
                 `<button type="button"  class="btn btn-danger m-2 favorite-destroy-button" value=${recipe_id}>
                     お気に入り解除
@@ -52,7 +50,7 @@ $(document).ready(function() {
         })
     })
 
-    $(document).on('click', '.favorite-destroy-button', function(event) {
+    $('.favorite-destroy-button').on('click', function(event) {
         let recipe_id = $(this).val();
         event.preventDefault();
         let template_name = $(this).data('template');
@@ -67,11 +65,15 @@ $(document).ready(function() {
             let base_url = $(location).attr('origin');
             console.log(base_url);
             if (template_name == "recipe_favorite_list") {
-                let recipe_cnt = $('.recipe-img').length;
-                if (recipe_cnt == 1)  location.href = base_url + '/recipe/recipes/favorite';
+                console.log(data);
+                let now_page_favorite_recipe_cnt = $('.recipe-img').length;
+                if (now_page_favorite_recipe_cnt == 1 || now_page_favorite_recipe_cnt == data.favorite_recipe_cnt)  {
+                    console.log("recipe-ok");
+                    location.href = base_url + '/recipe/recipes/favorite';
+                }
                 else {
                     console.log("not 0");
-                    $(`#recipe-${recipe_id}-article`).html("");
+                    $(`#recipe-${recipe_id}-article`).remove();
                 }
             } else {
                 $(`#recipe-${recipe_id}-favorite-button`).html(
