@@ -22,21 +22,8 @@
 						<li>
 							<div class="image_box m-2">
 								{% with img_url=ingredient.name|ingredient_img_path mini_img_url=ingredient.name|ingredient_mini_img_path %}
-								<!--
-								<div class="progressive image_box">
-									<img class="preview lazy thumbnail" data-src="{% static imag_url %}" src="{% static mini_imag_url %}" alt="{{ingredient.name}}">
-								</div>
-							-->
-							<!--
-								<div class="progressive image_box">
-									<img class="preview lazy thumbnail" data-src="{% static imag_url %}" src="{% static mini_imag_url %}" />
-							  	</div>
 								<div class="image_box progressive">
 									<img class="thumbnail" src="{% static mini_img_url %}" data-src="{% static img_url %}">
-								</div>
-								-->
-								<div class="image_box progressive">
-									<img class="thumbnail" src="{% static img_url %}" >
 								</div>
 								<div class="row">
 									<div class="col-12">{{ ingredient.name }} </div>
