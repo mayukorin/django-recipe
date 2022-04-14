@@ -42,10 +42,10 @@ Python, Django, 楽天レシピカテゴリ一覧 API（レシピ検索に利用
 
 ServiceWorker でのキャッシュ処理 と Intersection Observer API を使って，「食材名でレシピ検索」画面の食材写真の表示速度を改善した点．これにより，ユーザーのストレス軽減につながると考えられます．
 ServiceWorker・Intersection Observer API をそれぞれ適用した場合・そうでない場合の Lighthouse の計測結果を以下に示します．
-ServiceWorker・Intersection Observer API をどちらも適用した場合が，一番 First Contentful Paint や，Time to Interactive, Speed Index, Largest Contentful Paint が大きいことが分かります．
+ServiceWorker・Intersection Observer API をどちらも適用した場合に，First Contentful Paint や，Time to Interactive, Speed Index, Largest Contentful Paint が最小となることが分かります．
 
 - ServiceWorker・Intersection Observer API をどちらも適用
-https://user-images.githubusercontent.com/63027348/163294687-327e18a9-ef0f-4787-b184-249d1687df7a.png
+![cache-lazy](https://user-images.githubusercontent.com/63027348/163294687-327e18a9-ef0f-4787-b184-249d1687df7a.png)
 
 - ServiceWorker のみ適用
 https://user-images.githubusercontent.com/63027348/163294772-7bfdf01f-df5f-4b2d-96c3-6c7fc5b1643e.png
