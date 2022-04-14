@@ -30,47 +30,67 @@ $(document).ready(function() {
     $('.recipe-click-area').click(function() {
       window.location.href = $(this).data('link');
     });
-  });
-  $(window).on('load',function(){
-      $('input:checkbox[name="categories[]"]').prop('checked',false);
-  
-  });
+
+    let imagesToLoad = document.querySelectorAll('img[data-src]');
+    if('IntersectionObserver' in window) {
+      const observer = new IntersectionObserver((items, observer) => {
+        items.forEach((item) => {
+          if(item.isIntersecting) {
+            // 1 ピクセルでも見えたら
+            loadImages(item.target);
+            observer.unobserve(item.target);
+          }
+        });
+      });
+      imagesToLoad.forEach((img) => {
+        observer.observe(img);
+      });
+    } else {
+      imagesToLoad.forEach((img) => {
+        loadImages(img);
+      });
+    }
+});
+$(window).on('load',function(){
+    $('input:checkbox[name="categories[]"]').prop('checked',false);
+
+});
 
 
-  d1 = document.getElementById("recipe_result");
-  d2 = document.getElementById("select-myrecipe");
-  d3 = document.getElementById("myrecipe_result");
-  d4 = document.getElementById("select-myrecipe-delete");
+d1 = document.getElementById("recipe_result");
+d2 = document.getElementById("select-myrecipe");
+d3 = document.getElementById("myrecipe_result");
+d4 = document.getElementById("select-myrecipe-delete");
 
   
-  function clickBtn1() {
-      // 選択に変える
-      d1.style.display = "none";
-      d2.style.display = "block";
-  }
-  
-  function clickBtn2() {
-      // 戻す
-      d2.style.display = "none";
-      d1.style.display = "block";
-  }
-  
-  function clickBtn3() {
-      // 選択に変える
-      d3.style.display = "none";
-      d4.style.display = "block";
-  }
-  
-  function clickBtn4() {
-      // 戻す
-      d4.style.display = "none";
-      d3.style.display = "block";
-  }
+function clickBtn1() {
+    // 選択に変える
+    d1.style.display = "none";
+    d2.style.display = "block";
+}
 
+function clickBtn2() {
+    // 戻す
+    d2.style.display = "none";
+    d1.style.display = "block";
+}
 
-(function(){
-  new Progressive({
-    el: '#app',
-    lazyClass: 'lazy'
-  }).fire()
-})()
+function clickBtn3() {
+    // 選択に変える
+    d3.style.display = "none";
+    d4.style.display = "block";
+}
+
+function clickBtn4() {
+    // 戻す
+    d4.style.display = "none";
+    d3.style.display = "block";
+}
+
+const loadImages = (image) => {
+  image.setAttribute('src', image.getAttribute('data-src'));
+  image.onload = () => {
+    image.removeAttribute('data-src');
+  };
+};
+
