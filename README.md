@@ -48,14 +48,13 @@ ServiceWorker・Intersection Observer API をどちらも適用した場合に�
 ![cache-lazy](https://user-images.githubusercontent.com/63027348/163294687-327e18a9-ef0f-4787-b184-249d1687df7a.png)
 
 - ServiceWorker のみ適用
-https://user-images.githubusercontent.com/63027348/163294772-7bfdf01f-df5f-4b2d-96c3-6c7fc5b1643e.png
+![cache-not-lazy](https://user-images.githubusercontent.com/63027348/163294772-7bfdf01f-df5f-4b2d-96c3-6c7fc5b1643e.png)
 
 - Intersection Observer API のみ適用
-https://user-images.githubusercontent.com/63027348/163294845-15a52266-ab5f-437a-afd3-d50ef0fb2770.png
+![not-cache-lazy](https://user-images.githubusercontent.com/63027348/163294845-15a52266-ab5f-437a-afd3-d50ef0fb2770.png)
 
 - どちらも適用しない
-https://user-images.githubusercontent.com/63027348/163294896-9c0176b6-b4cc-431c-9d40-2503cefebe51.png
-
+![not-cache-not-lazy](https://user-images.githubusercontent.com/63027348/163294896-9c0176b6-b4cc-431c-9d40-2503cefebe51.png)
  
 <!--
 # Requirement
