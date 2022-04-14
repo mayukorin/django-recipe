@@ -10,6 +10,28 @@
 - 食材の写真からレシピを検索できるようにしました．
 - お気に入りのレシピを登録することもできます．
 
+# 工夫した点
+
+- ServiceWorker でのキャッシュ処理 と Intersection Observer API を使って，「食材名でレシピ検索」画面の食材写真の表示速度を改善した点．
+__ここまでの軌跡をスライドにまとめたので，ぜひ見ていただきたいです．__
+
+https://docs.google.com/presentation/d/1pirfZRT6MMmgtlwyGqs_thMviXgPgsMk_KKACBoaRXY/edit?usp=sharing
+
+ServiceWorker・Intersection Observer API をそれぞれ適用した場合・そうでない場合の Lighthouse の計測結果を以下に示します．
+ServiceWorker・Intersection Observer API をどちらも適用した場合に，First Contentful Paint や，Time to Interactive, Speed Index, Largest Contentful Paint が最小となることが分かります．
+
+- ServiceWorker・Intersection Observer API をどちらも適用
+![cache-lazy](https://user-images.githubusercontent.com/63027348/163294687-327e18a9-ef0f-4787-b184-249d1687df7a.png)
+
+- ServiceWorker のみ適用
+![cache-not-lazy](https://user-images.githubusercontent.com/63027348/163294772-7bfdf01f-df5f-4b2d-96c3-6c7fc5b1643e.png)
+
+- Intersection Observer API のみ適用
+![not-cache-lazy](https://user-images.githubusercontent.com/63027348/163294845-15a52266-ab5f-437a-afd3-d50ef0fb2770.png)
+
+- どちらも適用しない
+![not-cache-not-lazy](https://user-images.githubusercontent.com/63027348/163294896-9c0176b6-b4cc-431c-9d40-2503cefebe51.png)
+
 # 開発理由
 
 今ある食材から多くのレシピを作れるようになれば良いなと思い，作りました．
@@ -38,23 +60,7 @@ https://recipe-simple-search-app.herokuapp.com/recipe/random
 
 Python, Django, 楽天レシピカテゴリ一覧 API（レシピ検索に利用）, Cloud Vision API（食材検出に利用）, PWA（スマホのホーム画面から，スマホアプリのように利用するために使用），heroku （デプロイ）
 
-# 工夫した点
 
-ServiceWorker でのキャッシュ処理 と Intersection Observer API を使って，「食材名でレシピ検索」画面の食材写真の表示速度を改善した点．これにより，ユーザーのストレス軽減につながると考えられます．
-ServiceWorker・Intersection Observer API をそれぞれ適用した場合・そうでない場合の Lighthouse の計測結果を以下に示します．
-ServiceWorker・Intersection Observer API をどちらも適用した場合に，First Contentful Paint や，Time to Interactive, Speed Index, Largest Contentful Paint が最小となることが分かります．
-
-- ServiceWorker・Intersection Observer API をどちらも適用
-![cache-lazy](https://user-images.githubusercontent.com/63027348/163294687-327e18a9-ef0f-4787-b184-249d1687df7a.png)
-
-- ServiceWorker のみ適用
-![cache-not-lazy](https://user-images.githubusercontent.com/63027348/163294772-7bfdf01f-df5f-4b2d-96c3-6c7fc5b1643e.png)
-
-- Intersection Observer API のみ適用
-![not-cache-lazy](https://user-images.githubusercontent.com/63027348/163294845-15a52266-ab5f-437a-afd3-d50ef0fb2770.png)
-
-- どちらも適用しない
-![not-cache-not-lazy](https://user-images.githubusercontent.com/63027348/163294896-9c0176b6-b4cc-431c-9d40-2503cefebe51.png)
  
 <!--
 # Requirement

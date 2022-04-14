@@ -50,6 +50,7 @@ $(document).ready(function() {
         loadImages(img);
       });
     }
+
 });
 $(window).on('load',function(){
     $('input:checkbox[name="categories[]"]').prop('checked',false);
