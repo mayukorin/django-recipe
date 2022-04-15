@@ -30,28 +30,8 @@ $(document).ready(function() {
     $('.recipe-click-area').click(function() {
       window.location.href = $(this).data('link');
     });
-
-    let imagesToLoad = document.querySelectorAll('img[data-src]');
-    if('IntersectionObserver' in window) {
-      const observer = new IntersectionObserver((items, observer) => {
-        items.forEach((item) => {
-          if(item.isIntersecting) {
-            // 1 ピクセルでも見えたら
-            loadImages(item.target);
-            observer.unobserve(item.target);
-          }
-        });
-      });
-      imagesToLoad.forEach((img) => {
-        observer.observe(img);
-      });
-    } else {
-      imagesToLoad.forEach((img) => {
-        loadImages(img);
-      });
-    }
-
 });
+
 $(window).on('load',function(){
     $('input:checkbox[name="categories[]"]').prop('checked',false);
 
@@ -88,10 +68,5 @@ function clickBtn4() {
     d3.style.display = "block";
 }
 
-const loadImages = (image) => {
-  image.setAttribute('src', image.getAttribute('data-src'));
-  image.onload = () => {
-    image.removeAttribute('data-src');
-  };
-};
+
 
