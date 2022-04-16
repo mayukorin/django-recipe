@@ -25,7 +25,7 @@ $(document).ready(function() {
     });
     $('#clear').click(function(){
       $('.progressive').children('img').removeClass('checked');
-        $('input:checkbox[name="categories[]"]').prop('checked',false);
+      $('input[type="checkbox"]').prop('checked',false);
     });
     $('.recipe-click-area').click(function() {
       window.location.href = $(this).data('link');
@@ -33,7 +33,7 @@ $(document).ready(function() {
 });
 
 $(window).on('load',function(){
-    $('input:checkbox[name="categories[]"]').prop('checked',false);
+    $('input[type="checkbox"]').prop('checked',false);
 
 });
 

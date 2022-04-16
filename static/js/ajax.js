@@ -31,7 +31,7 @@ $.ajaxSetup({
 
 
 $(document).ready(function() {
-   $('.favorite-make-button').on('click', function(event) {
+   $('.favorite-button').on('click', '.favorite-make-button', function(event) {
         let recipe_id = $(this).val();
         event.preventDefault();
         $.ajax({
@@ -50,7 +50,7 @@ $(document).ready(function() {
         })
     })
 
-    $('.favorite-destroy-button').on('click', function(event) {
+    $('.favorite-button').on('click', '.favorite-destroy-button', function(event) {
         let recipe_id = $(this).val();
         event.preventDefault();
         let template_name = $(this).data('template');
