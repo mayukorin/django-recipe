@@ -33,7 +33,7 @@ function getImageInfo(evt) {
 function makeRequest(dataUrl, callback) {
 
   var end = dataUrl.indexOf(",")
-  var request =  "{'requests': [{'image': {'content': '" + dataUrl.slice(end + 1) + "'},'features': [{'type': 'OBJECT_LOCALIZATION','maxResults': 4,}]}]}"
+  var request =  "{'requests': [{'image': {'content': '" + dataUrl.slice(end + 1) + "'},'features': [{'type': 'LABEL_DETECTION','maxResults': 10,}]}]}"
   callback(request)
 
 }
@@ -73,13 +73,13 @@ function getVisionAPIInfo(request) {
 }
 
 function showResult(result) {
-  if (result.responses[0].localizedObjectAnnotations == null) {
+  if (result.responses[0].labelAnnotations == null) {
     var alert_message = `<div class="alert alert-danger" role="alert">
                           食材が一つも識別されませんでした
                           </div>`;
     $('.no_food').append($(alert_message));
   } else {
-    var english_name_array = result.responses[0].localizedObjectAnnotations.map((object) => object.name);
+    var english_name_array = result.responses[0].labelAnnotations.map((object) => object.description);
     console.log(english_name_array);
     var english_name_set = new Set(english_name_array);
     english_name_array = Array.from(english_name_set);
