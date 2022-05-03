@@ -26,16 +26,22 @@ function getImageInfo(evt) {
   reader.onload = function() {
     dataUrl = reader.result;
     $('#showPic').html("<img src='" + dataUrl + "'>");
-    makeRequest(dataUrl, getVisionAPIInfo);
+    makeRequest2(dataUrl, getVisionAPIInfo);
   }
 }
 
 function makeRequest(dataUrl, callback) {
 
   var end = dataUrl.indexOf(",")
-  var request =  "{'requests': [{'image': {'content': '" + dataUrl.slice(end + 1) + "'},'features': [{'type': 'LABEL_DETECTION','maxResults': 10,}]}]}"
+  var request =  "{'requests': [{'image': {'content': '" + dataUrl.slice(end + 1) + "'},'features': [{'type': 'OBJECT_LOCALIZATION','maxResults': 100,}]}]}"
   callback(request)
 
+}
+
+function makeRequest2(dataUrl, callback) {
+  var end = dataUrl.indexOf(",")
+  var request =  "{'requests': [{'image': {'content': '" + dataUrl.slice(end + 1) + "'},'features': [{'type': 'DOCUMENT_TEXT_DETECTION','maxResults': 100,}]}]}"
+  callback(request)
 }
 
 function getVisionAPIInfo(request) {
