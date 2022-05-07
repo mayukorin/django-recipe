@@ -80,6 +80,7 @@ class IngredientSearchByEnglishNameListView(View):
 
 class IngredientSearchByHiraganaNameListView(View):
     def post(self, request, *args, **kwargs):
+        print("start")
         start_time = time.perf_counter()
         ingredients_list = []
         print("kokomade")
@@ -184,7 +185,7 @@ class HiraganaConversionView(View):
 
         elapsed_time = end_time - start_time
         print(elapsed_time)
-
+        print("変換サーチ")
         return HttpResponse(json.dumps(hiragana_list), content_type="application/json")
 
 
