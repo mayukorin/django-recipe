@@ -117,6 +117,7 @@ class IngredientVisionApiInfoView(View):
 
 class HiraganaConversionView(View):
     def get(self, request, *args, **kwargs):
+        """
         start_time = time.perf_counter()
         hiragana_list = []
         japanese_names_string = ' '.join(self.request.GET.getlist("japanese_names[]")).replace('"', '')
@@ -138,6 +139,8 @@ class HiraganaConversionView(View):
         print(hiragana_list)
         """
         start_time = time.perf_counter()
+        hiragana_list = []
+        
         for japanese_name in self.request.GET.getlist("japanese_names[]"):
             '''
             if (japanese_name.isalpha() and japanese_name.isascii()) or japanese_name.isdecimal():
@@ -162,7 +165,7 @@ class HiraganaConversionView(View):
             
             # print(response["converted"])
             hiragana_list.append(response["converted"])
-        """
+        
         end_time = time.perf_counter()
 
         elapsed_time = end_time - start_time
