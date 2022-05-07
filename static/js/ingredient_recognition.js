@@ -3,6 +3,7 @@
 $(document).ready(function() {
   console.log("ok");
   $('#uploader').change(function(evt) {
+    console.log("change");
     clear();
     getImageInfo(evt);
     clear();

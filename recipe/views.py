@@ -92,8 +92,8 @@ class IngredientSearchByHiraganaNameListView(View):
                 hiragana_name=ingredient_hiragana_name).values("pk", "name")
             '''
             if len(ingredient_hiragana_name) == 1:
-                print(ingredient_hiragana_name)
-                print(jpa)
+                # print(ingredient_hiragana_name)
+                # print(jpa)
                 ingredients_list.append(ingredient_hiragana_name[0])
             
         json_response = json.dumps(ingredients_list)
@@ -132,7 +132,7 @@ class HiraganaConversionView(View):
             if response.get("error") is not None:
                 continue
             
-            print(response["converted"])
+            # print(response["converted"])
             hiragana_list.append(response["converted"])
 
         return HttpResponse(json.dumps(hiragana_list), content_type="application/json")
