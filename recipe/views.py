@@ -118,7 +118,25 @@ class HiraganaConversionView(View):
     def get(self, request, *args, **kwargs):
         start_time = time.perf_counter()
         hiragana_list = []
+        japanese_names_string = ' '.join(self.request.GET.getlist("japanese_names[]")).replace('"', '')
 
+        headers = {
+            'Content-Type': 'application/json',
+        }
+        data = '{"app_id":"' + settings.HIRAGANA_API_ID + '",' \
+        '"sentence":"' + japanese_names_string + '",' \
+            '"output_type":"hiragana"' \
+            '}'
+        response = requests.post(
+            settings.HIRAGANA_API_URL, 
+            data=data.encode("utf-8"), 
+            headers=headers,
+        ).json()
+        print(response)
+        hiragana_list = response["converted"].split()
+        print(hiragana_list)
+        """
+        start_time = time.perf_counter()
         for japanese_name in self.request.GET.getlist("japanese_names[]"):
             '''
             if (japanese_name.isalpha() and japanese_name.isascii()) or japanese_name.isdecimal():
@@ -138,10 +156,12 @@ class HiraganaConversionView(View):
                 headers=headers,
             ).json()
             if response.get("error") is not None:
+                print(japanese_name)
                 continue
             
             # print(response["converted"])
             hiragana_list.append(response["converted"])
+        """
         end_time = time.perf_counter()
 
         elapsed_time = end_time - start_time
