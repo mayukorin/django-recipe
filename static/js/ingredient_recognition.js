@@ -184,6 +184,7 @@ function ingredientDetectionByText(dataUrl) {
             'japanese_names': japanese_name_array,
         },
       }).done(function(hiragana_array) {
+        console.log(hiragana_array);
           $.ajax({
             url: "/recipe/ingredients/search_by_hiragana_name/",
             method: "GET",
