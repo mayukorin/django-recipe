@@ -129,6 +129,7 @@ function recognizeIngredient(dataUrl) {
     });
   });
   */
+ /*
   ingredientDetectionByLabel(dataUrl).then((result) => {
     ingredients_pk_and_name_by_label_detection = result;
     return ingredientDetectionByText(dataUrl);
@@ -137,6 +138,11 @@ function recognizeIngredient(dataUrl) {
     Object.assign(ingredients_pk_and_name_by_label_detection, result);
     showResult(ingredients_pk_and_name_by_label_detection);
   })
+  */
+  ingredientDetectionByLabel(dataUrl).then((result) => {
+    ingredients_pk_and_name_by_label_detection = result;
+    showResult(ingredients_pk_and_name_by_label_detection);
+  });
   // console.log(ingredients_pk_and_name_by_label_detection);
   // console.log(ingredients_pk_and_name_by_label_detection);
   // Object.assign(ingredients_pk_and_name_by_label_detection, ingredients_pk_and_name_by_text_detection);
