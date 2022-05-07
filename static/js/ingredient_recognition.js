@@ -187,7 +187,7 @@ function ingredientDetectionByText(dataUrl) {
         console.log(hiragana_array);
           $.ajax({
             url: "/recipe/ingredients/search_by_hiragana_name/",
-            method: "GET",
+            method: "POST",
             dataType: "json",
             data: {
               "ingredient_hiragana_names": hiragana_array

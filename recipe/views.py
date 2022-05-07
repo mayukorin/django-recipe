@@ -75,10 +75,11 @@ class IngredientSearchByEnglishNameListView(View):
         return HttpResponse(json_response, content_type="application/json")
 
 class IngredientSearchByHiraganaNameListView(View):
-    def get(self, request, *args, **kwargs):
+    def post(self, request, *args, **kwargs):
 
         ingredients_list = []
-        for ingredient_hiragana_name in self.request.GET.getlist(
+        print("kokomade")
+        for ingredient_hiragana_name in self.request.POST.getlist(
             "ingredient_hiragana_names[]"
         ):
 
