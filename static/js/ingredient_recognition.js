@@ -129,20 +129,22 @@ function recognizeIngredient(dataUrl) {
     });
   });
   */
- /*
   ingredientDetectionByLabel(dataUrl).then((result) => {
     ingredients_pk_and_name_by_label_detection = result;
     return ingredientDetectionByText(dataUrl);
   }).then((result) => {
-    result = new Map();
+    // result = new Map();
     Object.assign(ingredients_pk_and_name_by_label_detection, result);
     showResult(ingredients_pk_and_name_by_label_detection);
   })
-  */
+  /*
   ingredientDetectionByLabel(dataUrl).then((result) => {
     ingredients_pk_and_name_by_label_detection = result;
+    console.log(ingredients_pk_and_name_by_label_detection);
+    console.log("go to showResult");
     showResult(ingredients_pk_and_name_by_label_detection);
   });
+  */
   // console.log(ingredients_pk_and_name_by_label_detection);
   // console.log(ingredients_pk_and_name_by_label_detection);
   // Object.assign(ingredients_pk_and_name_by_label_detection, ingredients_pk_and_name_by_text_detection);

@@ -78,11 +78,11 @@ class IngredientSearchByHiraganaNameListView(View):
         for ingredient_hiragana_name in self.request.GET.getlist(
             "ingredient_hiragana_names[]"
         ):
-            jpa = ingredient_hiragana_name
+
             
             ingredient_hiragana_name = Ingredient.objects.annotate(
                 japa=Value(ingredient_hiragana_name, output_field=CharField())
-            ).filter(japa__icontains=F('hiragana_name')).values("pk", "name")
+            ).filter(Q(japa__startswith=F('hiragana_name')) | Q(japa__endswith=F('hiragana_name'))).distinct().values("pk", "name")
 
             '''
             ingredient_hiragana_name = Ingredient.objects.filter(
