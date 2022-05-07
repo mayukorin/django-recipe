@@ -117,19 +117,20 @@ function recognizeIngredient(dataUrl) {
   
 
   // var ingredients_pk_and_name_by_label_detection = ingredientDetectionByLabel(dataUrl);
-  var ingredients_pk_and_name_by_label_detection = new Map();
-  /*
+  // var ingredients_pk_and_name_by_label_detection = new Map();
   ingredientDetectionByLabel(dataUrl).then((result) => {
-    ingredients_pk_and_name_by_label_detection = result;
+    var ingredients_pk_and_name_by_label_detection = result;
     ingredientDetectionByText(dataUrl).then((result) => {
-      console.log(ingredients_pk_and_name_by_label_detection);
-      console.log(result);
-      result = new Map();
-      Object.assign(ingredients_pk_and_name_by_label_detection, result);
-      showResult22(ingredients_pk_and_name_by_label_detection);
+      var all_ingredients_pk_and_names = new Map();
+      ingredients_pk_and_name_by_label_detection.concat(result).forEach(function (ingredient_pk_and_name) {
+        all_ingredients_pk_and_names.set(ingredient_pk_and_name["pk"], ingredient_pk_and_name["name"]);
+      });
+      
+      // console.log(ingredients_pk_and_name_by_label_detection.concat(result));
+      showResult(Array.from(all_ingredients_pk_and_names));
     });
   });
-  */
+ /*
   ingredientDetectionByLabel(dataUrl).then((result) => {
     ingredients_pk_and_name_by_label_detection = result;
     return ingredientDetectionByText(dataUrl);
@@ -138,14 +139,16 @@ function recognizeIngredient(dataUrl) {
     Object.assign(result, ingredients_pk_and_name_by_label_detection);
     showResult(result);
   })
-  /*
-  ingredientDetectionByLabel(dataUrl).then((result) => {
+  */
+/*
+  ingredientDetectionByText(dataUrl).then((result) => {
     ingredients_pk_and_name_by_label_detection = result;
     console.log(ingredients_pk_and_name_by_label_detection);
     console.log("go to showResult");
     showResult(ingredients_pk_and_name_by_label_detection);
   });
   */
+
   // console.log(ingredients_pk_and_name_by_label_detection);
   // console.log(ingredients_pk_and_name_by_label_detection);
   // Object.assign(ingredients_pk_and_name_by_label_detection, ingredients_pk_and_name_by_text_detection);
@@ -190,8 +193,9 @@ function ingredientDetectionByText(dataUrl) {
             data: {
               "ingredient_hiragana_names": hiragana_array
             }
-          }).done(function(result) {
-            ingredients_pk_and_names = result;
+          }).done(function(result2) {
+            console.log(result2);
+            ingredients_pk_and_names = result2;
             console.log(ingredients_pk_and_names);
             defer.resolve(ingredients_pk_and_names);
           })
@@ -286,14 +290,16 @@ function showResult(ingredients_pk_and_names) {
     $('.no_food').append($(alert_message));
   } else {
     $('#recognition_to_search_button').removeClass("hidden");
-    $.each(ingredients_pk_and_names, function(index, pk_and_name) {
+    var index = 0;
+    for ( var [pk, name] of ingredients_pk_and_names) {
       var check_form = `
       <div class='custom-control custom-checkbox food_check'>
-      <input type="checkbox" class='custom-control-input' name='ingredients' id='custom-check-${index}' value=${pk_and_name["pk"]} checked>
-      <label class='custom-control-label' for='custom-check-${index}'>${pk_and_name["name"]}</label>
+      <input type="checkbox" class='custom-control-input' name='ingredients' id='custom-check-${index}' value=${pk} checked>
+      <label class='custom-control-label' for='custom-check-${index}'>${name}</label>
       </div>`;
       $('#checkboxes').append($(check_form));
-    });
+      index += 1;
+    }
   }
 }
 

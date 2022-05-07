@@ -96,8 +96,10 @@ class IngredientSearchByHiraganaNameListView(View):
             if len(ingredient_hiragana_name) == 1:
                 # print(ingredient_hiragana_name)
                 # print(jpa)
+                print(ingredient_hiragana_name)
+                print("hit")
                 ingredients_list.append(ingredient_hiragana_name[0])
-            
+        print(ingredients_list)
         json_response = json.dumps(ingredients_list)
         return HttpResponse(json_response, content_type="application/json")
 
