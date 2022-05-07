@@ -13,11 +13,12 @@ from django.contrib.auth.views import (
 )
 from django.contrib.auth.views import LogoutView as AuthLogoutView
 from django.views.generic import CreateView, ListView
-from django.db.models import Q, FilteredRelation
+from django.db.models import Q, FilteredRelation, Value, F, CharField
 from django.db.models import Count
 from django.shortcuts import redirect, render
 import requests
 from django.conf import settings
+from django.db.models.functions import Concat
 
 
 # Create your views here.
@@ -70,6 +71,34 @@ class IngredientSearchByEnglishNameListView(View):
         json_response = json.dumps(ingredients_list)
         return HttpResponse(json_response, content_type="application/json")
 
+class IngredientSearchByHiraganaNameListView(View):
+    def get(self, request, *args, **kwargs):
+
+        ingredients_list = []
+        for ingredient_hiragana_name in self.request.GET.getlist(
+            "ingredient_hiragana_names[]"
+        ):
+            jpa = ingredient_hiragana_name
+            
+            ingredient_hiragana_name = Ingredient.objects.annotate(
+                japa=Value(ingredient_hiragana_name, output_field=CharField())
+            ).filter(japa__icontains=F('hiragana_name')).values("pk", "name")
+
+            '''
+            ingredient_hiragana_name = Ingredient.objects.filter(
+                hiragana_name=ingredient_hiragana_name).values(
+                "pk", "name")
+            ingredient_hiragana_name = Ingredient.objects.filter(
+                hiragana_name=ingredient_hiragana_name).values("pk", "name")
+            '''
+            if len(ingredient_hiragana_name) == 1:
+                print(ingredient_hiragana_name)
+                print(jpa)
+                ingredients_list.append(ingredient_hiragana_name[0])
+            
+        json_response = json.dumps(ingredients_list)
+        return HttpResponse(json_response, content_type="application/json")
+
 
 class IngredientVisionApiInfoView(View):
     def post(self, request, *args, **kwargs):
@@ -78,6 +107,39 @@ class IngredientVisionApiInfoView(View):
             settings.VISION_API_URL, request.POST["search_param"]
         ).json()
         return HttpResponse(json.dumps(responses), content_type="application/json")
+
+
+class HiraganaConversionView(View):
+    def get(self, request, *args, **kwargs):
+
+        hiragana_list = []
+
+        for japanese_name in self.request.GET.getlist("japanese_names[]"):
+            print(japanese_name)
+            print("ok")
+            headers = {
+                'Content-Type': 'application/json',
+            }
+            data = '{"app_id":"' + settings.HIRAGANA_API_ID + '",' \
+            '"sentence":"' + japanese_name + '",' \
+                '"output_type":"hiragana"' \
+                '}'
+            response = requests.post(
+                settings.HIRAGANA_API_URL, 
+                data=data.encode("utf-8"), 
+                headers=headers,
+            ).json()
+            if response.get("error") is not None:
+                continue
+            
+            print(response["converted"])
+            hiragana_list.append(response["converted"])
+
+        return HttpResponse(json.dumps(hiragana_list), content_type="application/json")
+
+
+
+
 
 
 class RecipeSearchByIngredientListView(ListView):

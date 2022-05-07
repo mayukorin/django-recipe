@@ -48,4 +48,14 @@ urlpatterns = [
         views.IngredientVisionApiInfoView.as_view(),
         name="ingredient_vision_api_info",
     ),
+    path(
+        "ingredients/hiragana_api_info/",
+        views.HiraganaConversionView.as_view(),
+        name="ingredient_hiragana_api_info",
+    ),
+    path(
+        "ingredients/search_by_hiragana_name/",
+        views.IngredientSearchByHiraganaNameListView.as_view(),
+        name="ingredient_search_by_hiragana_name_list",
+    )
 ]
