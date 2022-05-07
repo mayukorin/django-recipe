@@ -66,7 +66,9 @@ class IngredientSearchByEnglishNameListView(View):
             ingredient_english_name = Ingredient.objects.filter(
                 english_name=ingredient_english_name
             ).values("pk", "name")
+            print(ingredient_english_name)
             if len(ingredient_english_name) == 1:
+                print(ingredient_english_name[0])
                 ingredients_list.append(ingredient_english_name[0])
         json_response = json.dumps(ingredients_list)
         return HttpResponse(json_response, content_type="application/json")

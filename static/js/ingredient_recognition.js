@@ -53,6 +53,7 @@ function ingredientDetectionByLabel(dataUrl) {
       console.log(english_name_array);
       var english_name_set = new Set(english_name_array);
       english_name_array = Array.from(english_name_set);
+      console.log(english_name_array);
       $.ajax({
         url: "/recipe/ingredients/search_by_english_name/",
         method: "GET",
@@ -134,8 +135,8 @@ function recognizeIngredient(dataUrl) {
     return ingredientDetectionByText(dataUrl);
   }).then((result) => {
     // result = new Map();
-    Object.assign(ingredients_pk_and_name_by_label_detection, result);
-    showResult(ingredients_pk_and_name_by_label_detection);
+    Object.assign(result, ingredients_pk_and_name_by_label_detection);
+    showResult(result);
   })
   /*
   ingredientDetectionByLabel(dataUrl).then((result) => {
