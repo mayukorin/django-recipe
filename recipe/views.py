@@ -19,6 +19,7 @@ from django.shortcuts import redirect, render
 import requests
 from django.conf import settings
 from django.db.models.functions import Concat
+import time
 
 
 # Create your views here.
@@ -115,12 +116,15 @@ class IngredientVisionApiInfoView(View):
 
 class HiraganaConversionView(View):
     def get(self, request, *args, **kwargs):
-
+        start_time = time.perf_counter()
         hiragana_list = []
 
         for japanese_name in self.request.GET.getlist("japanese_names[]"):
-            print(japanese_name)
-            print("ok")
+            '''
+            if (japanese_name.isalpha() and japanese_name.isascii()) or japanese_name.isdecimal():
+                print(japanese_name)
+                continue 
+            '''
             headers = {
                 'Content-Type': 'application/json',
             }
@@ -138,6 +142,10 @@ class HiraganaConversionView(View):
             
             # print(response["converted"])
             hiragana_list.append(response["converted"])
+        end_time = time.perf_counter()
+
+        elapsed_time = end_time - start_time
+        print(elapsed_time)
 
         return HttpResponse(json.dumps(hiragana_list), content_type="application/json")
 
