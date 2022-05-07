@@ -59,7 +59,7 @@ class CategoryListView(ListView):
 
 class IngredientSearchByEnglishNameListView(View):
     def get(self, request, *args, **kwargs):
-
+        start_time = time.perf_counter()
         ingredients_list = []
         for ingredient_english_name in self.request.GET.getlist(
             "ingredient_english_names[]"
@@ -72,11 +72,15 @@ class IngredientSearchByEnglishNameListView(View):
                 print(ingredient_english_name[0])
                 ingredients_list.append(ingredient_english_name[0])
         json_response = json.dumps(ingredients_list)
+        end_time = time.perf_counter()
+        elapsed_time = end_time - start_time
+        print(elapsed_time)
+        print("英語サーチ")
         return HttpResponse(json_response, content_type="application/json")
 
 class IngredientSearchByHiraganaNameListView(View):
     def post(self, request, *args, **kwargs):
-
+        start_time = time.perf_counter()
         ingredients_list = []
         print("kokomade")
         for ingredient_hiragana_name in self.request.POST.getlist(
@@ -103,15 +107,25 @@ class IngredientSearchByHiraganaNameListView(View):
                 ingredients_list.append(ingredient_hiragana_name[0])
         print(ingredients_list)
         json_response = json.dumps(ingredients_list)
+        end_time = time.perf_counter()
+
+        elapsed_time = end_time - start_time
+        print(elapsed_time)
+        print("ひらがなサーチ")
         return HttpResponse(json_response, content_type="application/json")
 
 
 class IngredientVisionApiInfoView(View):
     def post(self, request, *args, **kwargs):
-
+        start_time = time.perf_counter()
         responses = requests.post(
             settings.VISION_API_URL, request.POST["search_param"]
         ).json()
+        end_time = time.perf_counter()
+
+        elapsed_time = end_time - start_time
+        print(elapsed_time)
+        print("Labelサーチ")
         return HttpResponse(json.dumps(responses), content_type="application/json")
 
 
