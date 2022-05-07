@@ -38,7 +38,6 @@ function ingredientDetectionByLabel(dataUrl) {
   var defer = new $.Deferred();
   var end = dataUrl.indexOf(",")
   var request =  "{'requests': [{'image': {'content': '" + dataUrl.slice(end + 1) + "'},'features': [{'type': 'LABEL_DETECTION','maxResults': 100,}]}]}";
-  var ingredients_pk_and_names = new Map();
   $.ajax({
     url: "/recipe/ingredients/vision_api_info/",
     method: "POST",
@@ -64,11 +63,11 @@ function ingredientDetectionByLabel(dataUrl) {
       }).done(function(result) {
         console.log("label detection finised");
         console.log(result);
-        ingredients_pk_and_names = result;
-        console.log(ingredients_pk_and_names);
-        defer.resolve(ingredients_pk_and_names);
+        defer.resolve(result);
       })
-    } 
+    }  else {
+      defer.resolve([]);
+    }
   }).fail(function() {
     defer.reject('failed to load info');
   });
@@ -162,7 +161,6 @@ function ingredientDetectionByText(dataUrl) {
   var defer = new $.Deferred();
   var end = dataUrl.indexOf(",");
   var request =  "{'requests': [{'image': {'content': '" + dataUrl.slice(end + 1) + "'},'features': [{'type': 'DOCUMENT_TEXT_DETECTION','maxResults': 100,}]}]}";
-  var ingredients_pk_and_names = new Map();
   $.ajax({
     url: "/recipe/ingredients/vision_api_info/",
     method: "POST",
@@ -193,13 +191,13 @@ function ingredientDetectionByText(dataUrl) {
             data: {
               "ingredient_hiragana_names": hiragana_array
             }
-          }).done(function(result2) {
-            console.log(result2);
-            ingredients_pk_and_names = result2;
-            console.log(ingredients_pk_and_names);
-            defer.resolve(ingredients_pk_and_names);
+          }).done(function(result) {
+            console.log(result);
+            defer.resolve(result);
           })
         })
+      } else {
+        defer.resolve([]);
       }
   });
   return defer.promise();
