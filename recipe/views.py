@@ -13,11 +13,13 @@ from django.contrib.auth.views import (
 )
 from django.contrib.auth.views import LogoutView as AuthLogoutView
 from django.views.generic import CreateView, ListView
-from django.db.models import Q, FilteredRelation
+from django.db.models import Q, FilteredRelation, Value, F, CharField
 from django.db.models import Count
 from django.shortcuts import redirect, render
 import requests
 from django.conf import settings
+from django.db.models.functions import Concat
+import time
 
 
 # Create your views here.
@@ -57,7 +59,7 @@ class CategoryListView(ListView):
 
 class IngredientSearchByEnglishNameListView(View):
     def get(self, request, *args, **kwargs):
-
+        start_time = time.perf_counter()
         ingredients_list = []
         for ingredient_english_name in self.request.GET.getlist(
             "ingredient_english_names[]"
@@ -65,19 +67,131 @@ class IngredientSearchByEnglishNameListView(View):
             ingredient_english_name = Ingredient.objects.filter(
                 english_name=ingredient_english_name
             ).values("pk", "name")
+            print(ingredient_english_name)
             if len(ingredient_english_name) == 1:
+                print(ingredient_english_name[0])
                 ingredients_list.append(ingredient_english_name[0])
         json_response = json.dumps(ingredients_list)
+        end_time = time.perf_counter()
+        elapsed_time = end_time - start_time
+        print(elapsed_time)
+        print("英語サーチ")
+        return HttpResponse(json_response, content_type="application/json")
+
+class IngredientSearchByHiraganaNameListView(View):
+    def post(self, request, *args, **kwargs):
+        print("start")
+        start_time = time.perf_counter()
+        ingredients_list = []
+        print("kokomade")
+        for ingredient_hiragana_name in self.request.POST.getlist(
+            "ingredient_hiragana_names[]"
+        ):
+
+            
+            ingredient_hiragana_name = Ingredient.objects.annotate(
+                japa=Value(ingredient_hiragana_name, output_field=CharField())
+            ).filter(Q(japa__startswith=F('hiragana_name')) | Q(japa__endswith=F('hiragana_name'))).distinct().values("pk", "name")
+
+            '''
+            ingredient_hiragana_name = Ingredient.objects.filter(
+                hiragana_name=ingredient_hiragana_name).values(
+                "pk", "name")
+            ingredient_hiragana_name = Ingredient.objects.filter(
+                hiragana_name=ingredient_hiragana_name).values("pk", "name")
+            '''
+            if len(ingredient_hiragana_name) == 1:
+                # print(ingredient_hiragana_name)
+                # print(jpa)
+                print(ingredient_hiragana_name)
+                print("hit")
+                ingredients_list.append(ingredient_hiragana_name[0])
+        print(ingredients_list)
+        json_response = json.dumps(ingredients_list)
+        end_time = time.perf_counter()
+
+        elapsed_time = end_time - start_time
+        print(elapsed_time)
+        print("ひらがなサーチ")
         return HttpResponse(json_response, content_type="application/json")
 
 
 class IngredientVisionApiInfoView(View):
     def post(self, request, *args, **kwargs):
-
+        start_time = time.perf_counter()
         responses = requests.post(
             settings.VISION_API_URL, request.POST["search_param"]
         ).json()
+        end_time = time.perf_counter()
+
+        elapsed_time = end_time - start_time
+        print(elapsed_time)
+        print("Labelサーチ")
         return HttpResponse(json.dumps(responses), content_type="application/json")
+
+
+class HiraganaConversionView(View):
+    def get(self, request, *args, **kwargs):
+        
+        start_time = time.perf_counter()
+        hiragana_list = []
+        japanese_names_string = ' '.join(self.request.GET.getlist("japanese_names[]")).replace('"', '')
+
+        headers = {
+            'Content-Type': 'application/json',
+        }
+        data = '{"app_id":"' + settings.HIRAGANA_API_ID + '",' \
+        '"sentence":"' + japanese_names_string + '",' \
+            '"output_type":"hiragana"' \
+            '}'
+        response = requests.post(
+            settings.HIRAGANA_API_URL, 
+            data=data.encode("utf-8"), 
+            headers=headers,
+        ).json()
+        print(response)
+        hiragana_list = response["converted"].split()
+        print(hiragana_list)
+        """
+        
+        start_time = time.perf_counter()
+        hiragana_list = []
+        
+        for japanese_name in self.request.GET.getlist("japanese_names[]"):
+            '''
+            if (japanese_name.isalpha() and japanese_name.isascii()) or japanese_name.isdecimal():
+                print(japanese_name)
+                continue 
+            '''
+            headers = {
+                'Content-Type': 'application/json',
+            }
+            data = '{"app_id":"' + settings.HIRAGANA_API_ID + '",' \
+            '"sentence":"' + japanese_name + '",' \
+                '"output_type":"hiragana"' \
+                '}'
+            response = requests.post(
+                settings.HIRAGANA_API_URL, 
+                data=data.encode("utf-8"), 
+                headers=headers,
+            ).json()
+            if response.get("error") is not None:
+                print(japanese_name)
+                continue
+            
+            # print(response["converted"])
+            hiragana_list.append(response["converted"])
+        """
+        end_time = time.perf_counter()
+
+        elapsed_time = end_time - start_time
+        print(elapsed_time)
+        print("変換サーチ")
+        return HttpResponse(json.dumps(hiragana_list), content_type="application/json")
+
+
+
+
 
 
 class RecipeSearchByIngredientListView(ListView):

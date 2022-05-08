@@ -16,6 +16,7 @@ class Ingredient(models.Model):
     )
     api_id = models.CharField(max_length=100)
     english_name = models.CharField(null=True, blank=True, max_length=100)
+    hiragana_name = models.CharField(null=True, blank=True, max_length=100)
 
     def __str__(self):
         return self.name
@@ -29,6 +30,7 @@ class Recipe(models.Model):
     recipe_time = models.CharField(max_length=100)
     description = models.CharField(max_length=100)
     ingredients = models.ManyToManyField(Ingredient)
+    api_recipe_id = models.CharField(max_length=100, blank=True, null=True)
 
     def __str__(self):
         return self.title

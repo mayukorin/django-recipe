@@ -3,11 +3,27 @@
 $(document).ready(function() {
   console.log("ok");
   $('#uploader').change(function(evt) {
-    clear();
-    getImageInfo(evt);
-    clear();
-    $(".ImageArea").removeClass("hidden");
-    $(".resultArea").removeClass("hidden");
+    var file = evt.target.files;
+    var reader = new FileReader();
+    var dataUrl = "";
+    try {
+      reader.readAsDataURL(file[0]);
+      reader.onload = function() {
+        dataUrl = reader.result;
+        $('#showPic').html("<img src='" + dataUrl + "'>");
+        // makeRequest2(dataUrl, getVisionAPIInfo);
+        clear();
+        removeHidden('#progress-info');
+        recognizeIngredient(dataUrl);
+        // clear();
+        $(".ImageArea").removeClass("hidden");
+        $(".resultArea").removeClass("hidden");
+      }
+      // reader.onload = recognizeIngredient(reader)
+    } catch (e) {
+      console.log(e);
+    }
+
   })
 });
 
@@ -16,27 +32,238 @@ function clear() {
   $('#checkboxes').text("");
   $('.no_food').text("");
   $('#recognition_to_search_button').addClass("hidden");
+  $('#progress-info').addClass("hidden");
+  changeProgressBarStatus('0');
+  $('#label-vision-api').addClass('hidden');
+  $('#recognition_title').text("識別中．．．");
 }
 
 function getImageInfo(evt) {
   var file = evt.target.files;
   var reader = new FileReader();
   var dataUrl = "";
-  reader.readAsDataURL(file[0]);
-  reader.onload = function() {
-    dataUrl = reader.result;
-    $('#showPic').html("<img src='" + dataUrl + "'>");
-    makeRequest(dataUrl, getVisionAPIInfo);
+  try {
+    reader.readAsDataURL(file[0]);
+    reader.onload = function() {
+      dataUrl = reader.result;
+      $('#showPic').html("<img src='" + dataUrl + "'>");
+      // makeRequest2(dataUrl, getVisionAPIInfo);
+      
+      recognizeIngredient(dataUrl)
+    }
+    // reader.onload = recognizeIngredient(reader)
+  } catch (e) {
+    console.log(e);
   }
 }
+
+function removeHidden(selectorName) {
+  $(selectorName).removeClass('hidden');
+}
+function addHidden(selectorName) {
+  $(selectorName).addClass('hidden');
+}
+
+function changeProgressBarStatus(ratio) {
+  $('#progress-info').css('width', `${ratio}%`);
+  $('#progress-info').text(`${ratio}%`);
+  // $('#progress-info').attr(ariaValuenow, `${ratio}`);
+
+}
+
+function ingredientDetectionByLabel(dataUrl) {
+
+  var defer = new $.Deferred();
+  var end = dataUrl.indexOf(",")
+  var request =  "{'requests': [{'image': {'content': '" + dataUrl.slice(end + 1) + "'},'features': [{'type': 'LABEL_DETECTION','maxResults': 100,}]}]}";
+  $.ajax({
+    url: "/recipe/ingredients/vision_api_info/",
+    method: "POST",
+    dataType: "json",
+    data: {
+        'search_param': request,
+    },
+  }).done(function(result) {
+    console.log(result);
+    changeProgressBarStatus('20');
+    if (result.responses[0].labelAnnotations != null) {
+      var english_name_array = result.responses[0].labelAnnotations.map((object) => object.description);
+      console.log(english_name_array);
+      var english_name_set = new Set(english_name_array);
+      english_name_array = Array.from(english_name_set);
+      console.log(english_name_array);
+      $.ajax({
+        url: "/recipe/ingredients/search_by_english_name/",
+        method: "GET",
+        dataType: "json",
+        data: {
+            'ingredient_english_names': english_name_array,
+        }
+      }).done(function(result) {
+        console.log(result);
+        changeProgressBarStatus('40');
+        defer.resolve(result);
+      })
+    }  else {
+      changeProgressBarStatus('40');
+      defer.resolve([]);
+    }
+  }).fail(function() {
+    defer.reject('failed to load info');
+  });
+  return defer.promise();
+  /*
+  var end = dataUrl.indexOf(",")
+  var request =  "{'requests': [{'image': {'content': '" + dataUrl.slice(end + 1) + "'},'features': [{'type': 'LABEL_DETECTION','maxResults': 100,}]}]}";
+  var ingredients_pk_and_names = new Map();
+  $.ajax({
+    url: "/recipe/ingredients/vision_api_info/",
+    method: "POST",
+    dataType: "json",
+    data: {
+        'search_param': request,
+    },
+  }).done(function(result) {
+    console.log(result);
+    if (result.responses[0].labelAnnotations != null) {
+      var english_name_array = result.responses[0].labelAnnotations.map((object) => object.description);
+      console.log(english_name_array);
+      var english_name_set = new Set(english_name_array);
+      english_name_array = Array.from(english_name_set);
+      $.ajax({
+        url: "/recipe/ingredients/search_by_english_name/",
+        method: "GET",
+        dataType: "json",
+        data: {
+            'ingredient_english_names': english_name_array,
+        }
+      }).done(function(result) {
+        console.log("label detection finised");
+        console.log(result);
+        ingredients_pk_and_names = result;
+        console.log(ingredients_pk_and_names);
+        return ingredients_pk_and_names;
+      })
+    } 
+  }).fail(function(result) {
+    console.log('failed to load info');
+  });
+  */
+
+}
+
+function recognizeIngredient(dataUrl) {
+  
+
+  // var ingredients_pk_and_name_by_label_detection = ingredientDetectionByLabel(dataUrl);
+  // var ingredients_pk_and_name_by_label_detection = new Map();
+  ingredientDetectionByLabel(dataUrl).then((result) => {
+    var ingredients_pk_and_name_by_label_detection = result;
+    ingredientDetectionByText(dataUrl).then((result) => {
+      var all_ingredients_pk_and_names = new Map();
+      ingredients_pk_and_name_by_label_detection.concat(result).forEach(function (ingredient_pk_and_name) {
+        all_ingredients_pk_and_names.set(ingredient_pk_and_name["pk"], ingredient_pk_and_name["name"]);
+      });
+      
+      // console.log(ingredients_pk_and_name_by_label_detection.concat(result));
+      showResult(Array.from(all_ingredients_pk_and_names));
+    });
+  });
+ /*
+  ingredientDetectionByLabel(dataUrl).then((result) => {
+    ingredients_pk_and_name_by_label_detection = result;
+    return ingredientDetectionByText(dataUrl);
+  }).then((result) => {
+    // result = new Map();
+    Object.assign(result, ingredients_pk_and_name_by_label_detection);
+    showResult(result);
+  })
+  */
+/*
+  ingredientDetectionByText(dataUrl).then((result) => {
+    ingredients_pk_and_name_by_label_detection = result;
+    console.log(ingredients_pk_and_name_by_label_detection);
+    console.log("go to showResult");
+    showResult(ingredients_pk_and_name_by_label_detection);
+  });
+  */
+
+  // console.log(ingredients_pk_and_name_by_label_detection);
+  // console.log(ingredients_pk_and_name_by_label_detection);
+  // Object.assign(ingredients_pk_and_name_by_label_detection, ingredients_pk_and_name_by_text_detection);
+  // showResult22(ingredients_pk_and_name_by_label_detection);
+}
+
+
+
+
+function ingredientDetectionByText(dataUrl) {
+  var defer = new $.Deferred();
+  var end = dataUrl.indexOf(",");
+  var request =  "{'requests': [{'image': {'content': '" + dataUrl.slice(end + 1) + "'},'features': [{'type': 'DOCUMENT_TEXT_DETECTION','maxResults': 100,}]}]}";
+  $.ajax({
+    url: "/recipe/ingredients/vision_api_info/",
+    method: "POST",
+    dataType: "json",
+    data: {
+        'search_param': request,
+    },
+  }).done(function(result) {
+    changeProgressBarStatus('60');
+    if (result.responses[0].textAnnotations != null) {
+      console.log(result.responses[0].fullTextAnnotation.text);
+      var japanese_name_array = result.responses[0].fullTextAnnotation.text.split(/\n/);
+      // var japanese_name_array = result.responses[0].textAnnotations.map((object) => object.description);
+      // japanese_name_array.shift();
+      console.log(japanese_name_array);
+      $.ajax({
+        url: "/recipe/ingredients/hiragana_api_info/",
+        method: "GET",
+        dataType: "json",
+        data: {
+            'japanese_names': japanese_name_array,
+        },
+      }).done(function(hiragana_array) {
+        changeProgressBarStatus('80');
+        console.log(hiragana_array);
+          $.ajax({
+            url: "/recipe/ingredients/search_by_hiragana_name/",
+            method: "POST",
+            dataType: "json",
+            data: {
+              "ingredient_hiragana_names": hiragana_array
+            }
+          }).done(function(result) {
+            addHidden('#hiragana-conversion');
+            removeHidden('#hiragana-search');
+            console.log(result);
+            changeProgressBarStatus('100');
+            defer.resolve(result);
+          })
+        })
+      } else {
+        changeProgressBarStatus('100');
+        defer.resolve([]);
+      }
+  });
+  return defer.promise();
+}
+
 
 function makeRequest(dataUrl, callback) {
 
   var end = dataUrl.indexOf(",")
-  var request =  "{'requests': [{'image': {'content': '" + dataUrl.slice(end + 1) + "'},'features': [{'type': 'LABEL_DETECTION','maxResults': 10,}]}]}"
+  var request =  "{'requests': [{'image': {'content': '" + dataUrl.slice(end + 1) + "'},'features': [{'type': 'OBJECT_LOCALIZATION','maxResults': 100,}]}]}"
   callback(request)
 
 }
+
+function makeRequest2(dataUrl, callback) {
+  var end = dataUrl.indexOf(",")
+  var request =  "{'requests': [{'image': {'content': '" + dataUrl.slice(end + 1) + "'},'features': [{'type': 'DOCUMENT_TEXT_DETECTION','maxResults': 100,}]}]}"
+  callback(request)
+}
+
 
 function getVisionAPIInfo(request) {
 
@@ -50,7 +277,7 @@ function getVisionAPIInfo(request) {
     },
   }).done(function(result) {
     console.log(result);
-    showResult(result);
+    showResult2(result);
   }).fail(function(result) {
     console.log('failed to load info');
   });
@@ -72,7 +299,57 @@ function getVisionAPIInfo(request) {
   */
 }
 
-function showResult(result) {
+function showResult2(result) {
+  console.log(result);
+  console.log("hos")
+  var japanese_name_array = result.responses[0].textAnnotations.map((object) => object.description);
+  japanese_name_array.shift();
+  console.log(japanese_name_array);
+  $.ajax({
+    url: "/recipe/ingredients/hiragana_api_info/",
+    method: "GET",
+    dataType: "json",
+    data: {
+        'japanese_names': japanese_name_array,
+    },
+  }).done(function(hiragana_array) {
+      $.ajax({
+        url: "/recipe/ingredients/search_by_hiragana_name/",
+        method: "GET",
+        dataType: "json",
+        data: {
+          "ingredient_hiragana_names": hiragana_array
+        }
+      }).done(function(data) {
+        console.log(data);
+      })
+  });
+}
+
+function showResult(ingredients_pk_and_names) {
+  $('#recognition_title').text('識別結果');
+  if (ingredients_pk_and_names.length == 0) {
+    var alert_message = `<div class="alert alert-danger" role="alert">
+                      食材が一つも識別されませんでした
+                      </div>`;
+    $('.no_food').append($(alert_message));
+  } else {
+    removeHidden('#recognition_to_search_button');
+    var index = 0;
+    for ( var [pk, name] of ingredients_pk_and_names) {
+      var check_form = `
+      <div class='custom-control custom-checkbox food_check'>
+      <input type="checkbox" class='custom-control-input' name='ingredients' id='custom-check-${index}' value=${pk} checked>
+      <label class='custom-control-label' for='custom-check-${index}'>${name}</label>
+      </div>`;
+      $('#checkboxes').append($(check_form));
+      index += 1;
+    }
+  }
+}
+
+
+function showResult22(result) {
   if (result.responses[0].labelAnnotations == null) {
     var alert_message = `<div class="alert alert-danger" role="alert">
                           食材が一つも識別されませんでした

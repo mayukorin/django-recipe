@@ -10,7 +10,8 @@ class Command(BaseCommand):
 
         ingredients = Ingredient.objects.all().order_by('pk')
         target_ingredient = ingredients[today_order]
-        target_api_id = target_ingredient.api_id
+        # target_api_id = target_ingredient.api_id
+        target_api_id = "10-68"
 
         search_param = {
             "applicationId":[settings.RAKUTEN_RECIPE_API_ID],
@@ -27,26 +28,25 @@ class Command(BaseCommand):
             publish_day = recipe_result["recipePublishday"]
             recipe_time = recipe_result["recipeIndication"]
             description = recipe_result["recipeDescription"]
+            api_recipe_id = recipe_result["recipeId"]
+            
+            if Recipe.objects.filter(api_recipe_id=api_recipe_id).count() == 0:
+                recipe = Recipe.objects.create(img=img, link=link, title=title, publish_day=publish_day, recipe_time=recipe_time, description=description, api_recipe_id=api_recipe_id)
+                add_target_ingredient_flag = True
+                for ingredient_name in recipe_result["recipeMaterial"]:
+                    if Ingredient.objects.filter(name=ingredient_name).exists():
+                        ingredient = Ingredient.objects.get(name=ingredient_name)
+                        if ingredient.id == target_ingredient.id:
+                            add_target_ingredient_flag = False
+                        recipe.ingredients.add(ingredient)
 
-            try:
-                recipe = Recipe.objects.create(img=img, link=link, title=title, publish_day=publish_day, recipe_time=recipe_time, description=description)
-            except Exception as e:
+                if add_target_ingredient_flag:
+                    recipe.ingredients.add(target_ingredient)
+                recipe.save()
+            else:
                 print("既にそのレシピは登録されている")
                 continue
             # recipe.ingredients.add(target_ingredient)
-            add_target_ingredient_flag = True
-            for ingredient_name in recipe_result["recipeMaterial"]:
-                if Ingredient.objects.filter(name=ingredient_name).exists():
-                    ingredient = Ingredient.objects.get(name=ingredient_name)
-                    if ingredient.id == target_ingredient.id:
-                        add_target_ingredient_flag = False
-                    recipe.ingredients.add(ingredient)
-
-            if add_target_ingredient_flag:
-                recipe.ingredients.add(target_ingredient)
-
-                
-            recipe.save()
 
 
         today_order += 1
