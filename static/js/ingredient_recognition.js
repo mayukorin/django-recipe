@@ -13,6 +13,7 @@ $(document).ready(function() {
         $('#showPic').html("<img src='" + dataUrl + "'>");
         // makeRequest2(dataUrl, getVisionAPIInfo);
         clear();
+        removeHidden('#progress-info');
         recognizeIngredient(dataUrl);
         // clear();
         $(".ImageArea").removeClass("hidden");
@@ -31,6 +32,10 @@ function clear() {
   $('#checkboxes').text("");
   $('.no_food').text("");
   $('#recognition_to_search_button').addClass("hidden");
+  $('#progress-info').addClass("hidden");
+  changeProgressBarStatus('0');
+  $('#label-vision-api').addClass('hidden');
+  $('#recognition_title').text("識別中．．．");
 }
 
 function getImageInfo(evt) {
@@ -43,12 +48,27 @@ function getImageInfo(evt) {
       dataUrl = reader.result;
       $('#showPic').html("<img src='" + dataUrl + "'>");
       // makeRequest2(dataUrl, getVisionAPIInfo);
+      
       recognizeIngredient(dataUrl)
     }
     // reader.onload = recognizeIngredient(reader)
   } catch (e) {
     console.log(e);
   }
+}
+
+function removeHidden(selectorName) {
+  $(selectorName).removeClass('hidden');
+}
+function addHidden(selectorName) {
+  $(selectorName).addClass('hidden');
+}
+
+function changeProgressBarStatus(ratio) {
+  $('#progress-info').css('width', `${ratio}%`);
+  $('#progress-info').text(`${ratio}%`);
+  // $('#progress-info').attr(ariaValuenow, `${ratio}`);
+
 }
 
 function ingredientDetectionByLabel(dataUrl) {
@@ -65,6 +85,7 @@ function ingredientDetectionByLabel(dataUrl) {
     },
   }).done(function(result) {
     console.log(result);
+    changeProgressBarStatus('20');
     if (result.responses[0].labelAnnotations != null) {
       var english_name_array = result.responses[0].labelAnnotations.map((object) => object.description);
       console.log(english_name_array);
@@ -79,11 +100,12 @@ function ingredientDetectionByLabel(dataUrl) {
             'ingredient_english_names': english_name_array,
         }
       }).done(function(result) {
-        console.log("label detection finised");
         console.log(result);
+        changeProgressBarStatus('40');
         defer.resolve(result);
       })
     }  else {
+      changeProgressBarStatus('40');
       defer.resolve([]);
     }
   }).fail(function() {
@@ -187,7 +209,7 @@ function ingredientDetectionByText(dataUrl) {
         'search_param': request,
     },
   }).done(function(result) {
-    console.log(result);
+    changeProgressBarStatus('60');
     if (result.responses[0].textAnnotations != null) {
       console.log(result.responses[0].fullTextAnnotation.text);
       var japanese_name_array = result.responses[0].fullTextAnnotation.text.split(/\n/);
@@ -202,6 +224,7 @@ function ingredientDetectionByText(dataUrl) {
             'japanese_names': japanese_name_array,
         },
       }).done(function(hiragana_array) {
+        changeProgressBarStatus('80');
         console.log(hiragana_array);
           $.ajax({
             url: "/recipe/ingredients/search_by_hiragana_name/",
@@ -211,11 +234,15 @@ function ingredientDetectionByText(dataUrl) {
               "ingredient_hiragana_names": hiragana_array
             }
           }).done(function(result) {
+            addHidden('#hiragana-conversion');
+            removeHidden('#hiragana-search');
             console.log(result);
+            changeProgressBarStatus('100');
             defer.resolve(result);
           })
         })
       } else {
+        changeProgressBarStatus('100');
         defer.resolve([]);
       }
   });
@@ -300,13 +327,14 @@ function showResult2(result) {
 }
 
 function showResult(ingredients_pk_and_names) {
+  $('#recognition_title').text('識別結果');
   if (ingredients_pk_and_names.length == 0) {
     var alert_message = `<div class="alert alert-danger" role="alert">
                       食材が一つも識別されませんでした
                       </div>`;
     $('.no_food').append($(alert_message));
   } else {
-    $('#recognition_to_search_button').removeClass("hidden");
+    removeHidden('#recognition_to_search_button');
     var index = 0;
     for ( var [pk, name] of ingredients_pk_and_names) {
       var check_form = `
