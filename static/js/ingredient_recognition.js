@@ -3,12 +3,26 @@
 $(document).ready(function() {
   console.log("ok");
   $('#uploader').change(function(evt) {
-    console.log("change");
-    clear();
-    getImageInfo(evt);
-    clear();
-    $(".ImageArea").removeClass("hidden");
-    $(".resultArea").removeClass("hidden");
+    var file = evt.target.files;
+    var reader = new FileReader();
+    var dataUrl = "";
+    try {
+      reader.readAsDataURL(file[0]);
+      reader.onload = function() {
+        dataUrl = reader.result;
+        $('#showPic').html("<img src='" + dataUrl + "'>");
+        // makeRequest2(dataUrl, getVisionAPIInfo);
+        clear();
+        recognizeIngredient(dataUrl);
+        // clear();
+        $(".ImageArea").removeClass("hidden");
+        $(".resultArea").removeClass("hidden");
+      }
+      // reader.onload = recognizeIngredient(reader)
+    } catch (e) {
+      console.log(e);
+    }
+
   })
 });
 
@@ -23,14 +37,18 @@ function getImageInfo(evt) {
   var file = evt.target.files;
   var reader = new FileReader();
   var dataUrl = "";
-  reader.readAsDataURL(file[0]);
-  reader.onload = function() {
-    dataUrl = reader.result;
-    $('#showPic').html("<img src='" + dataUrl + "'>");
-    // makeRequest2(dataUrl, getVisionAPIInfo);
-    recognizeIngredient(dataUrl)
+  try {
+    reader.readAsDataURL(file[0]);
+    reader.onload = function() {
+      dataUrl = reader.result;
+      $('#showPic').html("<img src='" + dataUrl + "'>");
+      // makeRequest2(dataUrl, getVisionAPIInfo);
+      recognizeIngredient(dataUrl)
+    }
+    // reader.onload = recognizeIngredient(reader)
+  } catch (e) {
+    console.log(e);
   }
-  // reader.onload = recognizeIngredient(reader)
 }
 
 function ingredientDetectionByLabel(dataUrl) {
