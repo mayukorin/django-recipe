@@ -14,9 +14,9 @@ class Ingredient(models.Model):
     category = models.ForeignKey(
         Category, on_delete=models.CASCADE, default=1, related_name="ingredients"
     )
-    api_id = models.CharField(max_length=100, default="", unique=True)
-    english_name = models.CharField(max_length=100, default="", unique=True)
-    hiragana_name = models.CharField(max_length=100, default="", unique=True)
+    api_id = models.CharField(max_length=100, unique=True)
+    english_name = models.CharField(max_length=100, unique=True)
+    hiragana_name = models.CharField(max_length=100, unique=True)
 
     def __str__(self):
         return self.name
@@ -30,7 +30,7 @@ class Recipe(models.Model):
     cooking_time = models.CharField(max_length=100)
     description = models.CharField(max_length=100)
     ingredients = models.ManyToManyField(Ingredient)
-    api_id = models.CharField(max_length=100, default="", unique=True)
+    api_id = models.CharField(max_length=100, unique=True)
 
     def __str__(self):
         return self.title
