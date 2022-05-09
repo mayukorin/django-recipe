@@ -126,7 +126,7 @@ function ingredientDetectionByText(dataUrl) {
             console.log(text_list_detected);
 
             $.ajax({
-                url: "/recipe/ingredients/hiragana_api_info/",
+                url: "/recipe/ingredients/conversion_to_hiragana/",
                 method: "GET",
                 dataType: "json",
                 data: {
