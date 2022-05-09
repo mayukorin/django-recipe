@@ -34,12 +34,12 @@ class Command(BaseCommand):
                 link = recipe_result["recipeUrl"]
                 title = recipe_result["recipeTitle"]
                 publish_day = recipe_result["recipePublishday"]
-                recipe_time = recipe_result["recipeIndication"]
+                cooking_time = recipe_result["recipeIndication"]
                 description = recipe_result["recipeDescription"]
                 api_recipe_id = recipe_result["recipeId"]
                 
-                if Recipe.objects.filter(api_recipe_id=api_recipe_id).count() == 0:
-                    recipe = Recipe.objects.create(img=img, link=link, title=title, publish_day=publish_day, recipe_time=recipe_time, description=description, api_recipe_id=api_recipe_id)
+                if Recipe.objects.filter(api_id=api_recipe_id).count() == 0:
+                    recipe = Recipe.objects.create(img=img, link=link, title=title, publish_day=publish_day, cooking_time=cooking_time, description=description, api_id=api_id)
                     add_target_ingredient_flag = True
                     recipe_material_sentence = " ".join(recipe_result["recipeMaterial"])
                     print(recipe_material_sentence)
