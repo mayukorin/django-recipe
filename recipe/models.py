@@ -12,11 +12,11 @@ class Category(models.Model):
 class Ingredient(models.Model):
     name = models.CharField(max_length=100)
     category = models.ForeignKey(
-        Category, on_delete=models.CASCADE, null=True, related_name="ingredients"
+        Category, on_delete=models.CASCADE, default=1, related_name="ingredients"
     )
-    api_id = models.CharField(max_length=100)
-    english_name = models.CharField(null=True, blank=True, max_length=100)
-    hiragana_name = models.CharField(null=True, blank=True, max_length=100)
+    api_id = models.CharField(max_length=100, unique=True)
+    english_name = models.CharField(max_length=100, unique=True)
+    hiragana_name = models.CharField(max_length=100, unique=True)
 
     def __str__(self):
         return self.name
@@ -27,10 +27,10 @@ class Recipe(models.Model):
     link = models.CharField(max_length=300, unique=True)
     img = models.CharField(max_length=300, unique=True)
     publish_day = models.CharField(max_length=100)
-    recipe_time = models.CharField(max_length=100)
+    cooking_time = models.CharField(max_length=100)
     description = models.CharField(max_length=100)
     ingredients = models.ManyToManyField(Ingredient)
-    api_recipe_id = models.CharField(max_length=100, blank=True, null=True)
+    api_id = models.CharField(max_length=100, unique=True)
 
     def __str__(self):
         return self.title

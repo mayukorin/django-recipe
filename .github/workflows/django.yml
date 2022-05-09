@@ -47,6 +47,8 @@ jobs:
         echo "RAKUTEN_RECIPE_API_URL=${{ secrets.RAKUTEN_RECIPE_API_URL }}" >> .env
         echo "RAKUTEN_RECIPE_API_ID=${{ secrets.RAKUTEN_RECIPE_API_ID }}" >> .env
         echo "IS_GITHUB_WORKFLOW=${{ secrets.IS_GITHUB_WORKFLOW }}" >> .env
+        echo "HIRAGANA_API_URL=${{ secrets.HIRAGANA_API_URL }}" >> .env
+        echo "HIRAGANA_API_ID=${{ secrets.HIRAGANA_API_ID }}" >> .env
     - name: Run migrations
       run: python manage.py migrate
 

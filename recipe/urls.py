@@ -49,7 +49,7 @@ urlpatterns = [
         name="ingredient_vision_api_info",
     ),
     path(
-        "ingredients/hiragana_api_info/",
+        "ingredients/conversion_to_hiragana/",
         views.HiraganaConversionView.as_view(),
         name="ingredient_hiragana_api_info",
     ),
